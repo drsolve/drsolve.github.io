@@ -47,8 +47,8 @@ and solving polynomial systems over finite fields.
 
 <div class="box">
 <strong>GitHub Repository:</strong><br>
-<a href="https://github.com/dixonres/dixonres">
-https://github.com/dixonres/dixonres
+<a href="https://github.com/DixonRes/DixonRes">
+https://github.com/DixonRes/DixonRes
 </a>
 </div>
 
