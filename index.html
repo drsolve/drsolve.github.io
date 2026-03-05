@@ -3,1428 +3,606 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DixonRes — Dixon Resultant & Polynomial System Solver</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>DixonRes — Polynomial System Solver</title>
 <style>
-  :root {
-    --bg: #ffffff;
-    --bg2: #f7f8fa;
-    --bg3: #eef0f3;
-    --border: #e0e3e8;
-    --border-bright: #c8cdd6;
-    --text: #2d3748;
-    --text-dim: #6b7a8d;
-    --text-bright: #1a202c;
-    --accent: #2563eb;
-    --accent2: #059669;
-    --accent3: #dc2626;
-    --yellow: #b45309;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'IBM Plex Sans', sans-serif;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 15px;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-
-
-  @keyframes blink { 50% { opacity: 0; } }
-
-
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 40px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .nav-logo {
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-bright);
-    text-decoration: none;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .nav-logo .bracket {
-    color: var(--accent);
-    font-weight: 300;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 32px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-dim);
-    text-decoration: none;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--accent); }
-
-  .nav-badge {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    padding: 3px 10px;
-    border-radius: 2px;
-    text-decoration: none;
-    transition: background 0.2s;
-  }
-
-  .nav-badge:hover { background: rgba(37,99,235,0.08); }
-
-  #hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 80px 40px 60px;
-    overflow: hidden;
-    background: linear-gradient(160deg, #f0f5ff 0%, #ffffff 60%);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .hero-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-  }
-
-  .hero-tag {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .hero-tag::before {
-    content: '';
-    display: block;
-    width: 24px;
-    height: 1px;
-    background: var(--accent);
-  }
-
-  h1 {
-    font-family: var(--mono);
-    font-size: clamp(28px, 4vw, 48px);
-    font-weight: 600;
-    line-height: 1.15;
-    color: var(--text-bright);
-    margin-bottom: 24px;
-    letter-spacing: -0.02em;
-  }
-
-  h1 .highlight {
-    color: var(--accent);
-    position: relative;
-  }
-
-  h1 .highlight2 { color: var(--accent2); }
-
-  .hero-desc {
-    font-size: 15px;
-    color: var(--text-dim);
-    max-width: 480px;
-    margin-bottom: 40px;
-    line-height: 1.8;
-  }
-
-  .hero-cta {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .btn-primary {
-    font-family: var(--mono);
-    font-size: 13px;
-    background: var(--accent);
-    color: #000;
-    padding: 12px 28px;
-    text-decoration: none;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    transition: all 0.2s;
-    border-radius: 2px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .btn-primary:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(37,99,235,0.25);
-  }
-
-  .btn-secondary {
-    font-family: var(--mono);
-    font-size: 13px;
-    border: 1px solid var(--border-bright);
-    color: var(--text);
-    padding: 12px 28px;
-    text-decoration: none;
-    letter-spacing: 0.05em;
-    transition: all 0.2s;
-    border-radius: 2px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .btn-secondary:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(74,158,255,0.05);
-  }
-
-  .terminal {
-    background: #1e2330;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-    animation: floatUp 0.8s ease 0.3s both;
-  }
-
-  .terminal-header {
-    background: #2a3045;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .terminal-body {
-    padding: 20px;
-    font-family: var(--mono);
-    font-size: 13px;
-    line-height: 1.8;
-  }
-
-  .t-comment { color: #4a6080; }
-  .t-prompt { color: #34d399; }
-  .t-cmd { color: #e2e8f0; }
-  .t-output { color: #94a3b8; font-style: italic; }
-  .t-result { color: #fbbf24; }
-  .t-success { color: #34d399; }
-  .t-cursor {
-    display: inline-block;
-    width: 8px; height: 14px;
-    background: #60a5fa;
-    animation: blink 1.2s step-end infinite;
-    vertical-align: middle;
-    margin-left: 2px;
-  }
-
-  @keyframes floatUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .dot { width: 10px; height: 10px; border-radius: 50%; }
-  .dot-red { background: #ff5f57; }
-  .dot-yellow { background: #febc2e; }
-  .dot-green { background: #28c840; }
-
-  .terminal-title {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: #64748b;
-    margin-left: 8px;
-    letter-spacing: 0.05em;
-  }
-
-  /* ── STATS BAR ── */
-  .stats-bar {
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 40px;
-    background: var(--bg2);
-    position: relative;
-    z-index: 1;
-  }
-
-  .stats-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-  }
-
-  .stat-item {
-    padding: 0 40px;
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .stat-item:first-child { padding-left: 0; }
-  .stat-item:last-child { border-right: none; }
-
-  .stat-num {
-    font-family: var(--mono);
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--text-bright);
-    letter-spacing: -0.02em;
-  }
-
-  .stat-num span { color: var(--accent); }
-
-  .stat-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  /* ── SECTIONS ── */
-  section {
-    position: relative;
-    z-index: 1;
-  }
-
-  .section-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 80px 40px;
-  }
-
-  .section-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .section-label::before {
-    content: '';
-    display: block;
-    width: 24px;
-    height: 1px;
-    background: var(--accent);
-  }
-
-  h2 {
-    font-family: var(--mono);
-    font-size: clamp(22px, 3vw, 34px);
-    font-weight: 600;
-    color: var(--text-bright);
-    margin-bottom: 16px;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-  }
-
-  .section-desc {
-    color: var(--text-dim);
-    max-width: 600px;
-    margin-bottom: 48px;
-    font-size: 15px;
-  }
-
-  /* ── FEATURES GRID ── */
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .feature-card {
-    background: var(--bg2);
-    padding: 32px;
-    transition: background 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .feature-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .feature-card:hover { background: var(--bg3); }
-  .feature-card:hover::before { opacity: 1; }
-
-  .feature-icon {
-    font-family: var(--mono);
-    font-size: 22px;
-    color: var(--accent);
-    margin-bottom: 16px;
-    display: block;
-  }
-
-  .feature-title {
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-bright);
-    margin-bottom: 10px;
-    letter-spacing: 0.02em;
-  }
-
-  .feature-desc {
-    font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.7;
-  }
-
-  .feature-tag {
-    display: inline-block;
-    margin-top: 14px;
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent2);
-    border: 1px solid rgba(0,212,170,0.3);
-    padding: 3px 8px;
-    border-radius: 2px;
-  }
-
-  /* ── USAGE SECTION ── */
-  #usage { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-
-  .usage-tabs {
-    display: flex;
-    gap: 0;
-    border: 1px solid var(--border);
-    border-radius: 4px 4px 0 0;
-    overflow: hidden;
-    margin-bottom: 0;
-    flex-wrap: wrap;
-  }
-
-  .tab-btn {
-    font-family: var(--mono);
-    font-size: 12px;
-    padding: 12px 20px;
-    background: var(--bg3);
-    border: none;
-    border-right: 1px solid var(--border);
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.05em;
-  }
-
-  .tab-btn:last-child { border-right: none; }
-  .tab-btn:hover { color: var(--text); background: var(--bg2); }
-  .tab-btn.active { background: var(--bg2); color: var(--accent); border-bottom-color: var(--bg2); }
-
-  .tab-content {
-    display: none;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-top: none;
-    border-radius: 0 0 4px 4px;
-    overflow: hidden;
-  }
-
-  .tab-content.active { display: block; }
-
-  .code-header {
-    background: var(--bg3);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .code-lang {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .copy-btn {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    background: none;
-    border: 1px solid var(--border);
-    padding: 4px 12px;
-    cursor: pointer;
-    border-radius: 2px;
-    transition: all 0.2s;
-    letter-spacing: 0.05em;
-  }
-
-  .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
-
-  pre {
-    padding: 24px;
-    font-family: var(--mono);
-    font-size: 13px;
-    line-height: 1.8;
-    overflow-x: auto;
-    color: var(--text);
-    background: var(--bg);
-  }
-
-  .kw { color: var(--accent); font-weight: 500; }
-  .str { color: var(--accent2); }
-  .cmt { color: var(--text-dim); font-style: italic; }
-  .num { color: var(--yellow); }
-  .fn { color: #7c3aed; }
-
-  /* ── FIELDS SECTION ── */
-  .fields-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-
-  .field-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 28px;
-    transition: border-color 0.2s;
-  }
-
-  .field-card:hover { border-color: var(--border-bright); }
-
-  .field-card-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .field-badge {
-    font-family: var(--mono);
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--accent);
-    background: rgba(74,158,255,0.08);
-    border: 1px solid rgba(74,158,255,0.2);
-    width: 48px; height: 48px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 4px;
-    flex-shrink: 0;
-  }
-
-  .field-card h3 {
-    font-family: var(--mono);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-bright);
-  }
-
-  .field-card p {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-bottom: 16px;
-    line-height: 1.7;
-  }
-
-  .field-example {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 12px 16px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-dim);
-  }
-
-  .field-example .cmd { color: var(--text-bright); }
-  .field-example .arg { color: var(--accent2); }
-
-  /* ── OUTPUT SECTION ── */
-  .output-display {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .output-tabs {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg3);
-  }
-
-  .output-tab {
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 10px 20px;
-    border: none;
-    background: none;
-    color: var(--text-dim);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    letter-spacing: 0.05em;
-  }
-
-  .output-tab.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-  }
-
-  .output-content {
-    display: none;
-    padding: 24px;
-    font-family: var(--mono);
-    font-size: 12px;
-    line-height: 1.8;
-    color: var(--text-dim);
-  }
-
-  .output-content.active { display: block; }
-
-  .out-key { color: var(--accent); }
-  .out-val { color: var(--text-bright); }
-  .out-sep { color: var(--border-bright); }
-
-  /* ── INSTALL SECTION ── */
-  #install { background: var(--bg); }
-
-  .install-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-
-  .install-step {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 24px;
-    display: flex;
-    gap: 20px;
-  }
-
-  .step-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--bg);
-    background: var(--accent);
-    width: 28px; height: 28px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 2px;
-    flex-shrink: 0;
-    letter-spacing: 0.05em;
-  }
-
-  .step-content h4 {
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-bright);
-    margin-bottom: 8px;
-  }
-
-  .step-content p {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-bottom: 12px;
-  }
-
-  .inline-code {
-    font-family: var(--mono);
-    font-size: 12px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--accent2);
-    padding: 2px 8px;
-    border-radius: 2px;
-  }
-
-  .dep-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .dep-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--mono);
-    font-size: 12px;
-  }
-
-  .dep-req { color: var(--accent3); }
-  .dep-opt { color: var(--text-dim); }
-
-  .dep-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .dep-dot.req { background: var(--accent); }
-  .dep-dot.opt { background: var(--border-bright); }
-
-  .dep-name { color: var(--text-bright); }
-  .dep-ver { color: var(--text-dim); font-size: 11px; }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    background: var(--bg2);
-    padding: 48px 40px 32px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 48px;
-    margin-bottom: 48px;
-  }
-
-  .footer-brand p {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-top: 12px;
-    max-width: 260px;
-    line-height: 1.7;
-  }
-
-  .footer-col h4 {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-bright);
-    margin-bottom: 16px;
-  }
-
-  .footer-links {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .footer-links a {
-    font-size: 13px;
-    color: var(--text-dim);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .footer-links a:hover { color: var(--accent); }
-
-  .footer-bottom {
-    border-top: 1px solid var(--border);
-    padding-top: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .footer-bottom p {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 0.05em;
-  }
-
-  .license-badge {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent2);
-    border: 1px solid #6ee7b7;
-    padding: 4px 12px;
-    border-radius: 2px;
-    text-decoration: none;
-  }
-
-  .math-bg {
-    position: absolute;
-    right: 0; top: 50%;
-    transform: translateY(-50%);
-    font-family: var(--mono);
-    font-size: 11px;
-    color: rgba(37,99,235,0.07);
-    line-height: 1.6;
-    white-space: pre;
-    pointer-events: none;
-    text-align: right;
-    padding-right: 40px;
-    user-select: none;
-  }
-
-  /* ── ANIMATIONS ── */
-  .fade-in {
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .fade-in.visible {
-    opacity: 1;
-    transform: none;
-  }
-
-  .alert {
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 4px;
-    padding: 14px 20px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: #1e40af;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-
-  .alert-icon { font-size: 16px; }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 900px) {
-    .hero-inner { grid-template-columns: 1fr; gap: 40px; }
-    .features-grid { grid-template-columns: 1fr 1fr; }
-    .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 1px; }
-    .stat-item { padding: 16px 20px; }
-    .fields-grid { grid-template-columns: 1fr; }
-    .install-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-    nav { padding: 0 20px; }
-    .nav-links { display: none; }
-    .section-inner { padding: 60px 20px; }
-    .stats-bar { padding: 20px; }
-    h1 { font-size: 26px; }
-    #hero { padding: 80px 20px 40px; }
-  }
-
-  @media (max-width: 600px) {
-    .features-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr; }
-    .hero-cta { flex-direction: column; }
-    .btn-primary, .btn-secondary { justify-content: center; }
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  font-size: 15px;
+  color: #111;
+  background: #fff;
+  line-height: 1.6;
+}
+
+/* ── NAV ── */
+nav {
+  border-bottom: 1px solid #ddd;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav-logo {
+  font-weight: 700;
+  font-size: 16px;
+  color: #111;
+  text-decoration: none;
+  margin-right: 32px;
+  padding: 14px 0;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.nav-tabs {
+  display: flex;
+  list-style: none;
+}
+
+.nav-tabs button {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 18px;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  margin-bottom: -1px;
+}
+
+.nav-tabs button:hover { color: #111; }
+.nav-tabs button.active { color: #111; font-weight: 600; border-bottom-color: #111; }
+
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.nav-link {
+  font-size: 13px;
+  color: #555;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.nav-link:hover { background: #f5f5f5; color: #111; }
+
+/* ── PAGES ── */
+.page { display: none; max-width: 860px; margin: 0 auto; padding: 48px 40px 60px; }
+.page.active { display: block; }
+
+/* ── TYPOGRAPHY ── */
+h1 { font-size: 26px; font-weight: 700; margin-bottom: 10px; line-height: 1.25; }
+h2 { font-size: 18px; font-weight: 700; margin: 36px 0 10px; }
+h3 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; }
+p  { color: #333; margin-bottom: 12px; }
+a  { color: #0066cc; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.subtitle {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 28px;
+  max-width: 600px;
+}
+
+hr { border: none; border-top: 1px solid #e5e5e5; margin: 32px 0; }
+
+/* ── BADGES ── */
+.badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+.badge {
+  font-size: 12px;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 3px 10px;
+  color: #444;
+}
+.badge.green { background: #f0faf4; border-color: #b2dfcc; color: #1a6b3a; }
+.badge.blue  { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+
+/* ── FEATURE LIST ── */
+.feature-list { list-style: none; margin: 0 0 24px; }
+.feature-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.feature-list li::before { content: "→"; color: #aaa; flex-shrink: 0; font-size: 13px; }
+
+/* ── CODE ── */
+pre, code {
+  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  font-size: 13px;
+}
+
+pre {
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  margin: 10px 0 20px;
+  line-height: 1.7;
+  color: #222;
+}
+
+code {
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 12.5px;
+  color: #333;
+}
+
+.cmt { color: #999; }
+.kw  { color: #0055cc; font-weight: 500; }
+.str { color: #006644; }
+.num { color: #884400; }
+
+/* ── COPY WRAPPER ── */
+.code-block { position: relative; }
+.copy-btn {
+  position: absolute;
+  top: 8px; right: 8px;
+  font-size: 11px;
+  font-family: monospace;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 3px 10px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.15s;
+}
+.copy-btn:hover { background: #f0f0f0; color: #111; }
+
+/* ── SUB-TABS (Usage page) ── */
+.sub-tabs {
+  display: flex;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.sub-tabs button {
+  background: none; border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.sub-tabs button:hover { color: #111; }
+.sub-tabs button.active { color: #111; font-weight: 600; border-bottom-color: #111; }
+
+.sub-page { display: none; }
+.sub-page.active { display: block; }
+
+/* ── TABLE ── */
+table { width: 100%; border-collapse: collapse; margin: 12px 0 24px; font-size: 14px; }
+th { text-align: left; padding: 8px 12px; background: #f5f5f5; border: 1px solid #e0e0e0; font-weight: 600; color: #222; }
+td { padding: 8px 12px; border: 1px solid #e0e0e0; color: #333; vertical-align: top; }
+tr:nth-child(even) td { background: #fafafa; }
+
+/* ── INFO BOXES ── */
+.info-box {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+}
+.note-box {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #78350f;
+  margin-bottom: 20px;
+}
+
+/* ── REPO CARD ── */
+.repo-card {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+.repo-card-info p { font-size: 13px; color: #555; margin: 4px 0 0; }
+.repo-card-info strong { font-size: 15px; }
+.btn {
+  display: inline-block;
+  padding: 8px 20px;
+  background: #111;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.btn:hover { background: #333; text-decoration: none; }
+.btn-outline {
+  background: #fff;
+  color: #111;
+  border: 1px solid #bbb;
+}
+.btn-outline:hover { background: #f5f5f5; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid #e5e5e5;
+  padding: 20px 40px;
+  font-size: 12px;
+  color: #888;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  nav { padding: 0 16px; }
+  .page { padding: 28px 20px 48px; }
+  footer { padding: 16px 20px; }
+  .nav-tabs button { padding: 12px 10px; font-size: 13px; }
+  .repo-card { flex-direction: column; }
+  h1 { font-size: 22px; }
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">
-    <span class="bracket">[</span>DixonRes<span class="bracket">]</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#fields">Fields</a></li>
-    <li><a href="#install">Install</a></li>
+  <span class="nav-logo" onclick="showPage('home')">DixonRes</span>
+  <ul class="nav-tabs">
+    <li><button class="active" onclick="showPage('home')">Overview</button></li>
+    <li><button onclick="showPage('usage')">Usage</button></li>
+    <li><button onclick="showPage('fields')">Fields</button></li>
+    <li><button onclick="showPage('install')">Install</button></li>
   </ul>
-  <a href="https://github.com/DixonRes/DixonRes" class="nav-badge" target="_blank">↗ GitHub</a>
+  <div class="nav-right">
+    <a class="nav-link" href="https://github.com/DixonRes/DixonRes" target="_blank">↗ GitHub</a>
+  </div>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="math-bg">Res(f, g) = ∏(f(αᵢ))
-Det(Dixon(f₀,...,fₙ))
-S-polynomial reduction
-Buchberger criterion
-GF(p): x^p = x
-F_{p^k} extension tower
-Gröbner basis computation
-resultant ∈ k[y₁,...,yₙ]
-elimination ideal theory
-det(M) mod p → solutions</div>
+<!-- ══ OVERVIEW ══ -->
+<div id="page-home" class="page active">
+  <h1>Dixon Resultant &amp; Polynomial System Solver</h1>
+  <p class="subtitle">A C implementation for computing Dixon resultants and solving polynomial systems over finite fields, based on the FLINT and PML library.</p>
 
-  <div class="hero-inner">
-    <div>
-      <div class="hero-tag" style="animation: floatUp 0.6s ease 0.1s both; opacity:0">
-        C Library / CLI Tool
-      </div>
-      <h1 style="animation: floatUp 0.6s ease 0.2s both; opacity:0">
-        Dixon <span class="highlight">Resultant</span><br>
-        & Polynomial<br>
-        System <span class="highlight2">Solver</span>
-      </h1>
-      <p class="hero-desc" style="animation: floatUp 0.6s ease 0.3s both; opacity:0">
-        A high-performance C implementation for computing Dixon resultants and solving polynomial systems over finite fields. Built on FLINT and PML for maximal arithmetic efficiency.
-      </p>
-      <div class="hero-cta" style="animation: floatUp 0.6s ease 0.4s both; opacity:0">
-        <a href="https://github.com/DixonRes/DixonRes" class="btn-primary" target="_blank">
-          ↗ View on GitHub
-        </a>
-        <a href="#usage" class="btn-secondary">
-          → Usage Guide
-        </a>
-      </div>
+  <div class="badge-row">
+    <span class="badge green">GPLv2+</span>
+    <span class="badge blue">FLINT 3.4.0+</span>
+    <span class="badge">C</span>
+    <span class="badge">Finite Fields</span>
+  </div>
+
+  <div class="repo-card">
+    <div class="repo-card-info">
+      <strong>github.com/DixonRes/DixonRes</strong>
+      <p>Source code, build instructions, and issue tracker</p>
     </div>
-
-    <div class="terminal" style="animation: floatUp 0.8s ease 0.3s both; opacity:0">
-      <div class="terminal-header">
-        <div class="dot dot-red"></div>
-        <div class="dot dot-yellow"></div>
-        <div class="dot dot-green"></div>
-        <span class="terminal-title">dixon — bash — 80×24</span>
-      </div>
-      <div class="terminal-body">
-        <div class="t-comment"># Solve a 3×3 polynomial system over F₂₅₇</div>
-        <div>
-          <span class="t-prompt">$ </span>
-          <span class="t-cmd">./dixon --solve \</span>
-        </div>
-        <div style="padding-left:2em">
-          <span class="t-cmd">"x^2+y^2+z^2-6, \</span>
-        </div>
-        <div style="padding-left:2em">
-          <span class="t-cmd">x+y+z-4, \</span>
-        </div>
-        <div style="padding-left:2em">
-          <span class="t-cmd">x*y*z-x-1" 257</span>
-        </div>
-        <div>&nbsp;</div>
-        <div class="t-output">▸ Field: GF(257)</div>
-        <div class="t-output">▸ Variables: x, y, z</div>
-        <div class="t-output">▸ Computing Dixon resultant...</div>
-        <div class="t-output">▸ Solving resultant polynomial...</div>
-        <div>&nbsp;</div>
-        <div class="t-result">Solutions:</div>
-        <div class="t-result">&nbsp; [x=1, y=2, z=1]</div>
-        <div class="t-result">&nbsp; [x=2, y=1, z=1]</div>
-        <div class="t-result">&nbsp; [x=1, y=1, z=2]</div>
-        <div>&nbsp;</div>
-        <div class="t-success">✓ Saved → solution_20250301_142835.dat</div>
-        <div>
-          <span class="t-prompt">$ </span>
-          <span class="t-cursor"></span>
-        </div>
-      </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <a class="btn" href="https://github.com/DixonRes/DixonRes" target="_blank">View Repository</a>
+      <a class="btn btn-outline" href="#" onclick="showPage('install');return false;">Install →</a>
     </div>
   </div>
-</section>
 
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stats-inner">
-    <div class="stat-item">
-      <div class="stat-num">p &lt; 2<span>⁶³</span></div>
-      <div class="stat-label">Prime Field Size</div>
+  <h2>Features</h2>
+  <ul class="feature-list">
+    <li><strong>Dixon resultant computation</strong> — variable elimination for multivariate polynomial systems</li>
+    <li><strong>Polynomial system solver</strong> — solves n×n systems, enumerates all solutions over the given field</li>
+    <li><strong>Ideal reduction mode</strong> — reduces the system via triangular ideal generators before elimination</li>
+    <li><strong>Prime fields F<sub>p</sub></strong> with p &lt; 2<sup>63</sup>, using FLINT's modular arithmetic</li>
+    <li><strong>Extension fields F<sub>p<sup>k</sup></sub></strong> such as GF(2<sup>8</sup>), GF(3<sup>5</sup>), with custom or default irreducible polynomials</li>
+    <li><strong>PML acceleration</strong> (optional) for polynomial matrix operations on prime field systems</li>
+    <li><strong>File input mode</strong> for scripted and batch computation</li>
+    <li><strong>Silent mode</strong> — suppresses console output while still writing results to file</li>
+  </ul>
+
+  <hr>
+
+  <h2>Output</h2>
+  <p>Every computation automatically writes a timestamped <code>.dat</code> solution file containing field info, input polynomials, computation time, and results.</p>
+  <ul class="feature-list">
+    <li>Command-line input → <code>solution_YYYYMMDD_HHMMSS.dat</code></li>
+    <li>File input <code>example.dat</code> → <code>example_solution_YYYYMMDD_HHMMSS.dat</code></li>
+  </ul>
+
+  <hr>
+
+  <h2>Dependencies</h2>
+  <table>
+    <tr><th>Library</th><th>Version</th><th>Required</th><th>Notes</th></tr>
+    <tr>
+      <td><a href="https://github.com/flintlib/flint" target="_blank">FLINT</a></td>
+      <td>≥ 3.4.0</td><td>Yes</td>
+      <td>Core arithmetic library</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/vneiger/pml" target="_blank">PML</a></td>
+      <td>latest</td><td>No</td>
+      <td>Accelerates prime field systems; used automatically if available</td>
+    </tr>
+  </table>
+
+  <hr>
+
+  <h2>License</h2>
+  <p>DixonRes is free software distributed under the <strong>GNU General Public License, version 2.0 or later (GPLv2+)</strong>. See the file <code>COPYING</code> in the repository for the full license text.</p>
+</div>
+
+<!-- ══ USAGE ══ -->
+<div id="page-usage" class="page">
+  <h1>Usage</h1>
+  <p class="subtitle">All modes share the same binary: <code>./dixon</code>. Choose a mode below.</p>
+
+  <div class="sub-tabs">
+    <button class="active" onclick="showSub(this,'basic')">Basic Resultant</button>
+    <button onclick="showSub(this,'solve')">System Solver</button>
+    <button onclick="showSub(this,'ext')">Extension Fields</button>
+    <button onclick="showSub(this,'ideal')">Ideal Reduction</button>
+    <button onclick="showSub(this,'file')">File Input</button>
+  </div>
+
+  <div id="sub-basic" class="sub-page active">
+    <h2>Dixon Resultant (Basic)</h2>
+    <p>Eliminates variables from a polynomial system and returns the resultant in the remaining variables.</p>
+    <p><strong>Syntax</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size</pre>
     </div>
-    <div class="stat-item">
-      <div class="stat-num">F<span>pᵏ</span></div>
-      <div class="stat-label">Extension Fields</div>
+    <div class="note-box">The number of variables to eliminate must equal the number of equations minus one.</div>
+    <p><strong>Example</strong> — eliminate x and y from a 3-polynomial system over GF(257):</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon <span class="str">"x+y+z, x*y+y*z+z*x, x*y*z+1"</span> <span class="str">"x,y"</span> <span class="num">257</span></pre>
     </div>
-    <div class="stat-item">
-      <div class="stat-num">n<span>×n</span></div>
-      <div class="stat-label">System Dimensions</div>
+    <p>Output: the resultant polynomial in <code>z</code>, written to a <code>.dat</code> file.</p>
+  </div>
+
+  <div id="sub-solve" class="sub-page">
+    <h2>Polynomial System Solver</h2>
+    <p>Solves a well-determined system of n equations in n unknowns and enumerates all solutions over the given field.</p>
+    <p><strong>Syntax</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon --solve <span class="str">"polynomials"</span> field_size</pre>
     </div>
-    <div class="stat-item">
-      <div class="stat-num">GPL<span>-2.0</span></div>
-      <div class="stat-label">License</div>
+    <p><strong>Example</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon --solve <span class="str">"x^2 + y^2 + z^2 - 6, x + y + z - 4, x*y*z - x - 1"</span> <span class="num">257</span></pre>
     </div>
+    <p>Variables are auto-detected from the expressions. Use <code>--silent</code> to suppress console output while still writing the solution file:</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon --silent --solve <span class="str">"..."</span> <span class="num">257</span></pre>
+    </div>
+  </div>
+
+  <div id="sub-ext" class="sub-page">
+    <h2>Extension Fields</h2>
+    <p>Specify the field as <code>p^k</code>. The generator variable is <code>t</code> by default. FLINT's built-in irreducible polynomial is used unless a custom one is provided.</p>
+    <p><strong>Default polynomial</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon <span class="str">"x + y^2 + t, x*y + t*y + 1"</span> <span class="str">"x"</span> <span class="num">2^8</span></pre>
+    </div>
+    <p><strong>Custom polynomial</strong> (e.g., the AES field polynomial for GF(2<sup>8</sup>)):</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon --solve <span class="str">"x^2 + t*y, x*y + t^2"</span> <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span></pre>
+    </div>
+    <table>
+      <tr><th>Field</th><th>Argument</th></tr>
+      <tr><td>GF(2<sup>8</sup>) default</td><td><code>2^8</code></td></tr>
+      <tr><td>GF(2<sup>8</sup>) AES polynomial</td><td><code>"2^8: t^8+t^4+t^3+t+1"</code></td></tr>
+      <tr><td>GF(3<sup>5</sup>) default</td><td><code>3^5</code></td></tr>
+      <tr><td>GF(3<sup>5</sup>) custom</td><td><code>"3^5: t^5+2*t+1"</code></td></tr>
+    </table>
+  </div>
+
+  <div id="sub-ideal" class="sub-page">
+    <h2>Dixon with Ideal Reduction</h2>
+    <p>Reduces the polynomial system modulo a triangular ideal before computing the Dixon resultant. Useful for structured systems such as those arising from block cipher analysis.</p>
+    <p><strong>Syntax</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> <span class="str">"ideal_generators"</span> field_size</pre>
+    </div>
+    <p><strong>Example</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon \
+  <span class="str">"a1^2 + a2^2 + a3^2 + a4^2 - 10, a4^3 - a1 - a2*a3 - 5"</span> \
+  <span class="str">"a4"</span> \
+  <span class="str">"a2^3 = 2*a1 + 1, a3^3 = a1*a2 + 3, a4^3 = a1 + a2*a3 + 5"</span> \
+  <span class="num">257</span></pre>
+    </div>
+  </div>
+
+  <div id="sub-file" class="sub-page">
+    <h2>File Input</h2>
+    <p>Pass a <code>.dat</code> file instead of inline arguments for scripted or batch use.</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon example.dat
+./dixon --solve system.dat</pre>
+    </div>
+    <h3>Dixon mode — file format</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre><span class="num">257</span>            <span class="cmt"># line 1: field size</span>
+x+y+z          <span class="cmt"># line 2+: polynomials (one per line or comma-separated)</span>
+x*y+y*z+z*x
+x*y*z+1
+x,y            <span class="cmt"># last line: variables to eliminate</span></pre>
+    </div>
+    <h3>Solver mode — file format</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre><span class="num">257</span>                   <span class="cmt"># line 1: field size</span>
+x^2 + y^2 + z^2 - 6  <span class="cmt"># line 2+: n equations in n variables</span>
+x + y + z - 4
+x*y*z - x - 1</pre>
+    </div>
+    <p>Output is written to <code>example_solution_YYYYMMDD_HHMMSS.dat</code>.</p>
   </div>
 </div>
 
-<!-- FEATURES -->
-<section id="features">
-  <div class="section-inner">
-    <div class="section-label">Core Capabilities</div>
-    <h2>What DixonRes Does</h2>
-    <p class="section-desc">
-      DixonRes provides multiple computational modes for polynomial system analysis over finite fields, from basic resultant computation to full system solving with ideal reduction.
-    </p>
+<!-- ══ FIELDS ══ -->
+<div id="page-fields" class="page">
+  <h1>Finite Field Support</h1>
+  <p class="subtitle">DixonRes supports prime fields and extension fields. All arithmetic uses FLINT, with optional PML acceleration for prime field systems.</p>
 
-    <div class="features-grid fade-in">
-      <div class="feature-card">
-        <span class="feature-icon">∆</span>
-        <div class="feature-title">Dixon Resultant</div>
-        <p class="feature-desc">Compute the Dixon resultant for variable elimination in polynomial systems. Supports multivariate systems with any number of elimination variables.</p>
-        <span class="feature-tag">Core Mode</span>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">∑</span>
-        <div class="feature-title">System Solver</div>
-        <p class="feature-desc">Solve well-determined n×n polynomial systems (n equations in n unknowns) over prime or extension finite fields. Full solution enumeration.</p>
-        <span class="feature-tag">--solve</span>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">⊕</span>
-        <div class="feature-title">Ideal Reduction</div>
-        <p class="feature-desc">Dixon resultant computation with triangular ideal reduction. Specify ideal generators to reduce the system before elimination.</p>
-        <span class="feature-tag">Advanced</span>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">𝔽</span>
-        <div class="feature-title">Prime Fields F_p</div>
-        <p class="feature-desc">Full support for prime finite fields F_p where p &lt; 2⁶³. Uses FLINT's high-performance modular arithmetic throughout all computations.</p>
-        <span class="feature-tag">Fast Path</span>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">𝔾</span>
-        <div class="feature-title">Extension Fields F_{p^k}</div>
-        <p class="feature-desc">Arithmetic in extension fields such as GF(2⁸), GF(3⁵), etc. Supports custom irreducible polynomials or FLINT's built-in defaults.</p>
-        <span class="feature-tag">Extension</span>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">⚡</span>
-        <div class="feature-title">PML Acceleration</div>
-        <p class="feature-desc">Optional PML library integration for polynomial matrix operations. Automatically activated when available, accelerating well-determined prime field systems.</p>
-        <span class="feature-tag">Optional</span>
-      </div>
-    </div>
+  <h2>Prime fields — F<sub>p</sub></h2>
+  <p>Any prime p with p &lt; 2<sup>63</sup> is supported. Specify the field as a plain integer.</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>./dixon --solve <span class="str">"..."</span> <span class="num">257</span>
+./dixon --solve <span class="str">"..."</span> <span class="num">65537</span>
+./dixon --solve <span class="str">"..."</span> <span class="num">4294967311</span></pre>
   </div>
-</section>
+  <p>When the optional <a href="https://github.com/vneiger/pml" target="_blank">PML library</a> is installed and detected at configure time, polynomial matrix operations are automatically accelerated for well-determined prime field systems.</p>
 
-<!-- USAGE -->
-<section id="usage">
-  <div class="section-inner">
-    <div class="section-label">Documentation</div>
-    <h2>Usage Examples</h2>
-    <p class="section-desc">
-      DixonRes provides a unified CLI interface with multiple operational modes. All modes automatically write results to a timestamped output file.
-    </p>
+  <hr>
 
-    <div class="usage-tabs">
-      <button class="tab-btn active" onclick="switchTab('basic')">Basic Resultant</button>
-      <button class="tab-btn" onclick="switchTab('solve')">System Solver</button>
-      <button class="tab-btn" onclick="switchTab('ext')">Extension Fields</button>
-      <button class="tab-btn" onclick="switchTab('ideal')">Ideal Reduction</button>
-      <button class="tab-btn" onclick="switchTab('file')">File Input</button>
-    </div>
+  <h2>Extension fields — F<sub>p<sup>k</sup></sub></h2>
+  <p>Specified as <code>p^k</code>. The generator is the variable <code>t</code>, satisfying a chosen irreducible polynomial over F<sub>p</sub>. FLINT's built-in default is used if no polynomial is provided.</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre><span class="cmt"># FLINT default polynomial</span>
+./dixon <span class="str">"..."</span> <span class="num">2^8</span>
 
-    <div id="tab-basic" class="tab-content active">
-      <div class="code-header">
-        <span class="code-lang">bash — Dixon Resultant (Basic)</span>
-        <button class="copy-btn" onclick="copyCode('code-basic')">copy</button>
-      </div>
-      <pre id="code-basic"><span class="cmt"># Syntax: ./dixon "polynomials" "eliminate_vars" field_size</span>
-<span class="cmt"># Number of eliminate_vars = number of equations - 1</span>
-
-<span class="kw">./dixon</span> <span class="str">"x+y+z, x*y+y*z+z*x, x*y*z+1"</span> <span class="str">"x,y"</span> <span class="num">257</span>
-
-<span class="cmt"># Output: resultant polynomial in remaining variable z</span>
-<span class="cmt"># Written to: solution_YYYYMMDD_HHMMSS.dat</span></pre>
-    </div>
-
-    <div id="tab-solve" class="tab-content">
-      <div class="code-header">
-        <span class="code-lang">bash — Polynomial System Solver</span>
-        <button class="copy-btn" onclick="copyCode('code-solve')">copy</button>
-      </div>
-      <pre id="code-solve"><span class="cmt"># Syntax: ./dixon --solve "polynomials" field_size</span>
-<span class="cmt"># n equations in n unknowns</span>
-
-<span class="kw">./dixon</span> <span class="kw">--solve</span> <span class="str">"x^2 + y^2 + z^2 - 6, \
-              x + y + z - 4, \
-              x*y*z - x - 1"</span> <span class="num">257</span>
-
-<span class="cmt"># Variables are auto-detected from polynomial expressions</span>
-<span class="cmt"># All solutions over GF(257) are enumerated</span>
-
-<span class="cmt"># Silent mode (no console output, file still written):</span>
-<span class="kw">./dixon</span> <span class="kw">--silent</span> <span class="kw">--solve</span> <span class="str">"..."</span> <span class="num">257</span></pre>
-    </div>
-
-    <div id="tab-ext" class="tab-content">
-      <div class="code-header">
-        <span class="code-lang">bash — Extension Fields</span>
-        <button class="copy-btn" onclick="copyCode('code-ext')">copy</button>
-      </div>
-      <pre id="code-ext"><span class="cmt"># Default extension field (FLINT built-in polynomial)</span>
-<span class="cmt"># t is the extension field generator by default</span>
-<span class="kw">./dixon</span> <span class="str">"x + y^2 + t, x*y + t*y + 1"</span> <span class="str">"x"</span> <span class="num">2^8</span>
-
-<span class="cmt"># Custom irreducible polynomial (e.g., AES field F₂₅₆)</span>
-<span class="kw">./dixon</span> <span class="kw">--solve</span> <span class="str">"x^2 + t*y, x*y + t^2"</span> \
-        <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span>
-
-<span class="cmt"># Other extension examples</span>
-<span class="cmt"># GF(3^5):  "3^5"  or  "3^5: t^5 + 2*t + 1"</span>
-<span class="cmt"># GF(2^16): "2^16: t^16 + t^5 + t^3 + t^2 + 1"</span></pre>
-    </div>
-
-    <div id="tab-ideal" class="tab-content">
-      <div class="code-header">
-        <span class="code-lang">bash — Ideal Reduction Mode</span>
-        <button class="copy-btn" onclick="copyCode('code-ideal')">copy</button>
-      </div>
-      <pre id="code-ideal"><span class="cmt"># Syntax: ./dixon "polys" "elim_vars" "ideal_gens" "all_vars" field</span>
-
-<span class="kw">./dixon</span> \
-  <span class="str">"a1^2 + a2^2 + a3^2 + a4^2 - 10, \
-   a4^3 - a1 - a2*a3 - 5"</span> \
-  <span class="str">"a4"</span> \
-  <span class="str">"a2^3 = 2*a1 + 1, \
-   a3^3 = a1*a2 + 3, \
-   a4^3 = a1 + a2*a3 + 5"</span> \
-  <span class="num">257</span>
-
-<span class="cmt"># Ideal generators reduce the system before Dixon computation</span>
-<span class="cmt"># Useful for structured systems (e.g., from block ciphers)</span></pre>
-    </div>
-
-    <div id="tab-file" class="tab-content">
-      <div class="code-header">
-        <span class="code-lang">text — File Input Format</span>
-        <button class="copy-btn" onclick="copyCode('code-file')">copy</button>
-      </div>
-      <pre id="code-file"><span class="cmt"># Dixon Mode file (example.dat):</span>
-<span class="num">257</span>                        <span class="cmt"># Line 1: field size</span>
-x+y+z                      <span class="cmt"># Line 2+: polynomials</span>
-x*y+y*z+z*x
-x*y*z+1
-x,y                        <span class="cmt"># Last: variables to eliminate</span>
-
-<span class="cmt"># Solver Mode file (system.dat):</span>
-<span class="num">257</span>                        <span class="cmt"># Line 1: field size</span>
-x^2 + y^2 + z^2 - 6       <span class="cmt"># Line 2+: n equations</span>
-x + y + z - 4
-x*y*z - x - 1
-
-<span class="cmt"># Run with:</span>
-<span class="kw">./dixon</span> example.dat
-<span class="kw">./dixon</span> <span class="kw">--solve</span> system.dat
-
-<span class="cmt"># Output: example_solution_YYYYMMDD_HHMMSS.dat</span></pre>
-    </div>
+<span class="cmt"># Custom polynomial</span>
+./dixon <span class="str">"..."</span> <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span></pre>
   </div>
-</section>
+  <div class="info-box">Extension fields are slower than prime fields due to polynomial arithmetic overhead. PML acceleration does not apply to extension field computations.</div>
 
-<!-- FIELDS -->
-<section id="fields">
-  <div class="section-inner">
-    <div class="section-label">Arithmetic Domains</div>
-    <h2>Finite Field Support</h2>
-    <p class="section-desc">
-      DixonRes supports both prime fields and extension fields. Prime fields with optional PML acceleration offer the best performance.
-    </p>
+  <h3>Common examples</h3>
+  <table>
+    <tr><th>Field</th><th>Argument</th><th>Notes</th></tr>
+    <tr><td>GF(257)</td><td><code>257</code></td><td>Prime field</td></tr>
+    <tr><td>GF(65537)</td><td><code>65537</code></td><td>Prime field (Fermat prime)</td></tr>
+    <tr><td>GF(2<sup>8</sup>)</td><td><code>2^8</code></td><td>FLINT default polynomial</td></tr>
+    <tr><td>GF(2<sup>8</sup>) AES</td><td><code>"2^8: t^8+t^4+t^3+t+1"</code></td><td>AES field polynomial</td></tr>
+    <tr><td>GF(3<sup>5</sup>)</td><td><code>3^5</code></td><td>FLINT default polynomial</td></tr>
+    <tr><td>GF(2<sup>16</sup>)</td><td><code>2^16</code></td><td>FLINT default polynomial</td></tr>
+  </table>
+</div>
 
-    <div class="fields-grid fade-in">
-      <div class="field-card">
-        <div class="field-card-header">
-          <div class="field-badge">𝔽ₚ</div>
-          <h3>Prime Fields</h3>
-        </div>
-        <p>Finite fields GF(p) for any prime p &lt; 2⁶³. All basic arithmetic is performed modulo p using FLINT's optimized routines. When the PML library is available, polynomial matrix operations are automatically accelerated for well-determined systems.</p>
-        <div class="field-example">
-          <div><span class="cmd">./dixon --solve</span> <span class="arg">"..."</span> <span class="cmd">257</span></div>
-          <div><span class="cmd">./dixon --solve</span> <span class="arg">"..."</span> <span class="cmd">65537</span></div>
-          <div><span class="cmd">./dixon --solve</span> <span class="arg">"..."</span> <span class="cmd">4294967311</span></div>
-        </div>
-      </div>
-      <div class="field-card">
-        <div class="field-card-header">
-          <div class="field-badge">𝔽ₚᵏ</div>
-          <h3>Extension Fields</h3>
-        </div>
-        <p>Finite fields GF(pᵏ) specified as <code class="inline-code">p^k</code>. The generator <code class="inline-code">t</code> satisfies a chosen irreducible polynomial over GF(p). FLINT's built-in polynomial is used by default; custom polynomials can be specified after a colon.</p>
-        <div class="field-example">
-          <div><span class="cmd">./dixon</span> <span class="arg">"..."</span> <span class="cmd">2^8</span></div>
-          <div><span class="cmd">./dixon</span> <span class="arg">"..."</span> <span class="cmd">"2^8: t^8+t^4+t^3+t+1"</span></div>
-          <div><span class="cmd">./dixon</span> <span class="arg">"..."</span> <span class="cmd">3^5</span></div>
-        </div>
-      </div>
-    </div>
+<!-- ══ INSTALL ══ -->
+<div id="page-install" class="page">
+  <h1>Installation</h1>
+  <p class="subtitle">DixonRes requires FLINT 3.4.0 or later. PML is optional but recommended for prime field performance.</p>
+
+  <h2>1. Install FLINT</h2>
+  <p>Get FLINT 3.4.0 or newer from <a href="https://github.com/flintlib/flint" target="_blank">github.com/flintlib/flint</a> and follow its build instructions for your platform.</p>
+
+  <h2>2. Install PML (optional)</h2>
+  <p>Get PML from <a href="https://github.com/vneiger/pml" target="_blank">github.com/vneiger/pml</a>. If present, DixonRes will detect and use it automatically at configure time for prime field systems.</p>
+
+  <h2>3. Clone and build</h2>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>git clone https://github.com/DixonRes/DixonRes
+cd DixonRes
+./configure
+make
+make install   <span class="cmt"># optional</span></pre>
   </div>
-</section>
-
-<!-- OUTPUT -->
-<section id="output" style="background: var(--bg2); border-top: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">Output Format</div>
-    <h2>Solution Files</h2>
-    <p class="section-desc">
-      Every computation automatically generates a timestamped <code class="inline-code">.dat</code> file containing full details of the computation and its results.
-    </p>
-
-    <div class="output-display fade-in">
-      <div class="output-tabs">
-        <button class="output-tab active" onclick="switchOutput('out-solve')">Solver Output</button>
-        <button class="output-tab" onclick="switchOutput('out-dixon')">Dixon Output</button>
-      </div>
-      <div id="out-solve" class="output-content active">
-        <div><span class="out-key">File:</span>          <span class="out-val">solution_20250301_142835.dat</span></div>
-        <div><span class="out-sep">─────────────────────────────────────────</span></div>
-        <div><span class="out-key">Field:</span>         <span class="out-val">GF(257)</span></div>
-        <div><span class="out-key">Mode:</span>          <span class="out-val">Polynomial System Solver</span></div>
-        <div><span class="out-key">Variables:</span>     <span class="out-val">x, y, z</span></div>
-        <div>&nbsp;</div>
-        <div><span class="out-key">Polynomials:</span></div>
-        <div>  <span class="out-val">f₁ = x^2 + y^2 + z^2 - 6</span></div>
-        <div>  <span class="out-val">f₂ = x + y + z - 4</span></div>
-        <div>  <span class="out-val">f₃ = x*y*z - x - 1</span></div>
-        <div>&nbsp;</div>
-        <div><span class="out-key">Computation time:</span> <span class="out-val">0.0031s</span></div>
-        <div>&nbsp;</div>
-        <div><span class="out-key">Solutions (3 found):</span></div>
-        <div>  <span class="out-val">[x=1, y=2, z=1]</span></div>
-        <div>  <span class="out-val">[x=2, y=1, z=1]</span></div>
-        <div>  <span class="out-val">[x=1, y=1, z=2]</span></div>
-      </div>
-      <div id="out-dixon" class="output-content">
-        <div><span class="out-key">File:</span>          <span class="out-val">example_solution_20250301_143102.dat</span></div>
-        <div><span class="out-sep">─────────────────────────────────────────</span></div>
-        <div><span class="out-key">Field:</span>         <span class="out-val">GF(257)</span></div>
-        <div><span class="out-key">Mode:</span>          <span class="out-val">Dixon Resultant</span></div>
-        <div><span class="out-key">Eliminated:</span>    <span class="out-val">x, y</span></div>
-        <div><span class="out-key">Remaining:</span>     <span class="out-val">z</span></div>
-        <div>&nbsp;</div>
-        <div><span class="out-key">Polynomials:</span></div>
-        <div>  <span class="out-val">f₁ = x + y + z</span></div>
-        <div>  <span class="out-val">f₂ = x*y + y*z + z*x</span></div>
-        <div>  <span class="out-val">f₃ = x*y*z + 1</span></div>
-        <div>&nbsp;</div>
-        <div><span class="out-key">Computation time:</span> <span class="out-val">0.0018s</span></div>
-        <div>&nbsp;</div>
-        <div><span class="out-key">Resultant (in z):</span></div>
-        <div>  <span class="out-val">z^3 + 256*z^2 + z + 256</span></div>
-      </div>
-    </div>
-
-    <div style="margin-top: 20px; display: flex; gap: 16px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; color: var(--text-dim);">
-      <div>▸ Command-line input → <span style="color: var(--text)">solution_YYYYMMDD_HHMMSS.dat</span></div>
-      <div>▸ File input <span style="color: var(--text)">example.dat</span> → <span style="color: var(--text)">example_solution_YYYYMMDD_HHMMSS.dat</span></div>
-      <div>▸ Silent mode: <span style="color: var(--text)">--silent</span> suppresses console, file still written</div>
-    </div>
+  <p>For additional build options:</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>./configure --help
+make help</pre>
   </div>
-</section>
 
-<!-- INSTALL -->
-<section id="install">
-  <div class="section-inner">
-    <div class="section-label">Getting Started</div>
-    <h2>Installation</h2>
-    <p class="section-desc">
-      DixonRes requires FLINT 3.4.0 or later. The optional PML library can be installed alongside for performance improvements on prime field systems.
-    </p>
-
-    <div class="alert">
-      <span class="alert-icon">ℹ</span>
-      <span>FLINT 3.4.0+ is required. PML is optional but recommended for well-determined systems over prime fields.</span>
-    </div>
-
-    <div class="install-grid fade-in">
-      <div class="install-step">
-        <div class="step-num">01</div>
-        <div class="step-content">
-          <h4>Install FLINT</h4>
-          <p>Get FLINT 3.4.0 or newer from the official repository. Follow the build instructions for your platform.</p>
-          <ul class="dep-list">
-            <li class="dep-item">
-              <div class="dep-dot req"></div>
-              <span class="dep-name">FLINT</span>
-              <span class="dep-ver">≥ 3.4.0 · required</span>
-            </li>
-            <li class="dep-item">
-              <div class="dep-dot opt"></div>
-              <span class="dep-name">PML</span>
-              <span class="dep-ver">latest · optional</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="install-step">
-        <div class="step-num">02</div>
-        <div class="step-content">
-          <h4>Clone the Repository</h4>
-          <p>Get the source from GitHub.</p>
-          <div class="field-example">
-            <div><span class="cmd">git clone https://github.com/DixonRes/DixonRes</span></div>
-            <div><span class="cmd">cd DixonRes</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="install-step">
-        <div class="step-num">03</div>
-        <div class="step-content">
-          <h4>Configure & Build</h4>
-          <p>Run the configure script to detect dependencies, then build with make.</p>
-          <div class="field-example">
-            <div><span class="cmd">./configure</span></div>
-            <div><span class="cmd">make</span></div>
-            <div><span class="cmd">make install</span>  <span style="color:var(--text-dim)"># optional</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="install-step">
-        <div class="step-num">04</div>
-        <div class="step-content">
-          <h4>Verify Installation</h4>
-          <p>Test with the quick example to confirm everything is working correctly.</p>
-          <div class="field-example">
-            <div><span class="cmd">./dixon --solve \</span></div>
-            <div>&nbsp;&nbsp;<span class="arg">"x+y-3, x*y-2"</span> <span class="cmd">257</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="margin-top: 32px; text-align: center;">
-      <a href="https://github.com/DixonRes/DixonRes" class="btn-primary" target="_blank" style="font-size:14px; padding: 14px 36px;">
-        ↗ &nbsp; View Full Documentation on GitHub
-      </a>
-    </div>
+  <h2>4. Verify</h2>
+  <p>Run a quick test to confirm the build is working:</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>./dixon --solve <span class="str">"x + y - 3, x*y - 2"</span> <span class="num">257</span></pre>
   </div>
-</section>
+  <p>Expected: solutions <code>[x=1, y=2]</code> and <code>[x=2, y=1]</code> over GF(257).</p>
 
-<!-- FOOTER -->
+  <hr>
+
+  <h2>Requirements</h2>
+  <table>
+    <tr><th>Component</th><th>Required</th><th>Version</th><th>Link</th></tr>
+    <tr>
+      <td>FLINT</td><td>Yes</td><td>≥ 3.4.0</td>
+      <td><a href="https://github.com/flintlib/flint" target="_blank">github.com/flintlib/flint</a></td>
+    </tr>
+    <tr>
+      <td>PML</td><td>No</td><td>latest</td>
+      <td><a href="https://github.com/vneiger/pml" target="_blank">github.com/vneiger/pml</a></td>
+    </tr>
+    <tr>
+      <td>C compiler</td><td>Yes</td><td>C11 or later</td>
+      <td>gcc / clang</td>
+    </tr>
+  </table>
+</div>
+
 <footer>
-  <div class="footer-inner">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="nav-logo" style="font-size: 15px;">
-          <span class="bracket">[</span>DixonRes<span class="bracket">]</span>
-        </div>
-        <p>A high-performance C library for Dixon resultant computation and polynomial system solving over finite fields.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Modes</h4>
-        <ul class="footer-links">
-          <li><a href="#usage">Basic Resultant</a></li>
-          <li><a href="#usage">System Solver</a></li>
-          <li><a href="#usage">Ideal Reduction</a></li>
-          <li><a href="#usage">Extension Fields</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Resources</h4>
-        <ul class="footer-links">
-          <li><a href="https://github.com/DixonRes/DixonRes" target="_blank">GitHub</a></li>
-          <li><a href="https://github.com/flintlib/flint" target="_blank">FLINT Library</a></li>
-          <li><a href="https://github.com/vneiger/pml" target="_blank">PML Library</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Project</h4>
-        <ul class="footer-links">
-          <li><a href="https://github.com/DixonRes/DixonRes/blob/main/COPYING" target="_blank">License (GPLv2+)</a></li>
-          <li><a href="https://github.com/DixonRes/DixonRes/issues" target="_blank">Issues</a></li>
-          <li><a href="https://github.com/DixonRes/DixonRes/blob/main/README.md" target="_blank">README</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2025 DixonRes · Distributed under GNU General Public License v2.0 or later (GPLv2+)</p>
-      <a href="https://github.com/DixonRes/DixonRes/blob/main/COPYING" class="license-badge" target="_blank">GPLv2+</a>
-    </div>
-  </div>
+  <span>DixonRes · <a href="https://github.com/DixonRes/DixonRes" target="_blank">github.com/DixonRes/DixonRes</a></span>
+  <span>GNU General Public License v2.0 or later (GPLv2+)</span>
 </footer>
 
 <script>
-  // Tab switching
-  function switchTab(id) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    document.getElementById('tab-' + id).classList.add('active');
-    event.target.classList.add('active');
-  }
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const idx = ['home','usage','fields','install'].indexOf(id);
+  if (idx >= 0) document.querySelectorAll('.nav-tabs button')[idx].classList.add('active');
+  window.scrollTo(0, 0);
+}
 
-  function switchOutput(id) {
-    document.querySelectorAll('.output-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.output-tab').forEach(el => el.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    event.target.classList.add('active');
-  }
+function showSub(btn, id) {
+  const page = btn.closest('.page');
+  page.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
+  page.querySelectorAll('.sub-tabs button').forEach(b => b.classList.remove('active'));
+  document.getElementById('sub-' + id).classList.add('active');
+  btn.classList.add('active');
+}
 
-  // Copy code
-  function copyCode(id) {
-    const el = document.getElementById(id);
-    const text = el.innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = event.target;
-      btn.textContent = 'copied!';
-      btn.style.color = 'var(--accent2)';
-      btn.style.borderColor = 'var(--accent2)';
-      setTimeout(() => {
-        btn.textContent = 'copy';
-        btn.style.color = '';
-        btn.style.borderColor = '';
-      }, 1800);
-    });
-  }
-
-  // Scroll animations
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-  // Hero animation fix
-  document.querySelectorAll('[style*="opacity:0"]').forEach(el => {
-    el.addEventListener('animationend', () => {
-      el.style.opacity = '1';
-    });
+function copyPre(btn) {
+  const pre = btn.parentElement.querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 1800);
   });
+}
 </script>
 </body>
 </html>
