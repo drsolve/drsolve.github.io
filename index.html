@@ -8,18 +8,18 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0c0f;
-    --bg2: #0f1318;
-    --bg3: #141820;
-    --border: #1e2530;
-    --border-bright: #2a3545;
-    --text: #c8d4e0;
-    --text-dim: #5a6e82;
-    --text-bright: #e8f0f8;
-    --accent: #4a9eff;
-    --accent2: #00d4aa;
-    --accent3: #ff6b6b;
-    --yellow: #f0c040;
+    --bg: #ffffff;
+    --bg2: #f7f8fa;
+    --bg3: #eef0f3;
+    --border: #e0e3e8;
+    --border-bright: #c8cdd6;
+    --text: #2d3748;
+    --text-dim: #6b7a8d;
+    --text-bright: #1a202c;
+    --accent: #2563eb;
+    --accent2: #059669;
+    --accent3: #dc2626;
+    --yellow: #b45309;
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
   }
@@ -37,41 +37,16 @@
     overflow-x: hidden;
   }
 
-  /* ── GRID OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(74,158,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(74,158,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
 
-  /* ── SCANLINE ── */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.08) 2px,
-      rgba(0,0,0,0.08) 4px
-    );
-    pointer-events: none;
-    z-index: 0;
-  }
 
-  /* ── NAV ── */
+  @keyframes blink { 50% { opacity: 0; } }
+
+
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
-    background: rgba(10,12,15,0.92);
+    background: rgba(255,255,255,0.95);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     padding: 0 40px;
@@ -119,17 +94,16 @@
   .nav-badge {
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--accent2);
-    border: 1px solid var(--accent2);
+    color: var(--accent);
+    border: 1px solid var(--accent);
     padding: 3px 10px;
     border-radius: 2px;
     text-decoration: none;
     transition: background 0.2s;
   }
 
-  .nav-badge:hover { background: rgba(0,212,170,0.1); }
+  .nav-badge:hover { background: rgba(37,99,235,0.08); }
 
-  /* ── HERO ── */
   #hero {
     position: relative;
     min-height: 100vh;
@@ -137,6 +111,8 @@
     align-items: center;
     padding: 80px 40px 60px;
     overflow: hidden;
+    background: linear-gradient(160deg, #f0f5ff 0%, #ffffff 60%);
+    border-bottom: 1px solid var(--border);
   }
 
   .hero-inner {
@@ -217,9 +193,9 @@
   }
 
   .btn-primary:hover {
-    background: #6ab5ff;
+    background: #1d4ed8;
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(74,158,255,0.3);
+    box-shadow: 0 8px 24px rgba(37,99,235,0.25);
   }
 
   .btn-secondary {
@@ -243,28 +219,49 @@
     background: rgba(74,158,255,0.05);
   }
 
-  /* TERMINAL */
   .terminal {
-    background: var(--bg2);
+    background: #1e2330;
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
     animation: floatUp 0.8s ease 0.3s both;
+  }
+
+  .terminal-header {
+    background: #2a3045;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .terminal-body {
+    padding: 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .t-comment { color: #4a6080; }
+  .t-prompt { color: #34d399; }
+  .t-cmd { color: #e2e8f0; }
+  .t-output { color: #94a3b8; font-style: italic; }
+  .t-result { color: #fbbf24; }
+  .t-success { color: #34d399; }
+  .t-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: #60a5fa;
+    animation: blink 1.2s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
   }
 
   @keyframes floatUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
-  }
-
-  .terminal-header {
-    background: var(--bg3);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
   }
 
   .dot { width: 10px; height: 10px; border-radius: 50%; }
@@ -275,34 +272,10 @@
   .terminal-title {
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--text-dim);
+    color: #64748b;
     margin-left: 8px;
     letter-spacing: 0.05em;
   }
-
-  .terminal-body {
-    padding: 20px;
-    font-family: var(--mono);
-    font-size: 13px;
-    line-height: 1.8;
-  }
-
-  .t-comment { color: #3d5a7a; }
-  .t-prompt { color: var(--accent2); }
-  .t-cmd { color: var(--text-bright); }
-  .t-output { color: var(--text-dim); font-style: italic; }
-  .t-result { color: var(--yellow); }
-  .t-success { color: var(--accent2); }
-  .t-cursor {
-    display: inline-block;
-    width: 8px; height: 14px;
-    background: var(--accent);
-    animation: blink 1.2s step-end infinite;
-    vertical-align: middle;
-    margin-left: 2px;
-  }
-
-  @keyframes blink { 50% { opacity: 0; } }
 
   /* ── STATS BAR ── */
   .stats-bar {
@@ -496,7 +469,7 @@
 
   .tab-btn:last-child { border-right: none; }
   .tab-btn:hover { color: var(--text); background: var(--bg2); }
-  .tab-btn.active { background: var(--bg); color: var(--accent); border-bottom-color: var(--bg); }
+  .tab-btn.active { background: var(--bg2); color: var(--accent); border-bottom-color: var(--bg2); }
 
   .tab-content {
     display: none;
@@ -548,13 +521,14 @@
     line-height: 1.8;
     overflow-x: auto;
     color: var(--text);
+    background: var(--bg);
   }
 
-  .kw { color: var(--accent); }
+  .kw { color: var(--accent); font-weight: 500; }
   .str { color: var(--accent2); }
-  .cmt { color: #3d5a7a; font-style: italic; }
+  .cmt { color: var(--text-dim); font-style: italic; }
   .num { color: var(--yellow); }
-  .fn { color: #c792ea; }
+  .fn { color: #7c3aed; }
 
   /* ── FIELDS SECTION ── */
   .fields-grid {
@@ -825,20 +799,19 @@
     font-family: var(--mono);
     font-size: 11px;
     color: var(--accent2);
-    border: 1px solid rgba(0,212,170,0.3);
+    border: 1px solid #6ee7b7;
     padding: 4px 12px;
     border-radius: 2px;
     text-decoration: none;
   }
 
-  /* ── MATH DECORATION ── */
   .math-bg {
     position: absolute;
     right: 0; top: 50%;
     transform: translateY(-50%);
     font-family: var(--mono);
     font-size: 11px;
-    color: rgba(74,158,255,0.06);
+    color: rgba(37,99,235,0.07);
     line-height: 1.6;
     white-space: pre;
     pointer-events: none;
@@ -859,15 +832,14 @@
     transform: none;
   }
 
-  /* ── ALERT BANNER ── */
   .alert {
-    background: rgba(74,158,255,0.06);
-    border: 1px solid rgba(74,158,255,0.2);
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
     border-radius: 4px;
     padding: 14px 20px;
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--accent);
+    color: #1e40af;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -1390,15 +1362,15 @@ x*y*z - x - 1
       <div class="footer-col">
         <h4>Project</h4>
         <ul class="footer-links">
-          <li><a href="https://github.com/DixonRes/DixonRes/blob/main/COPYING" target="_blank">License (GPL-2.0)</a></li>
+          <li><a href="https://github.com/DixonRes/DixonRes/blob/main/COPYING" target="_blank">License (GPLv2+)</a></li>
           <li><a href="https://github.com/DixonRes/DixonRes/issues" target="_blank">Issues</a></li>
           <li><a href="https://github.com/DixonRes/DixonRes/blob/main/README.md" target="_blank">README</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 DixonRes · Distributed under GNU GPL v2.0-or-later</p>
-      <a href="https://github.com/DixonRes/DixonRes/blob/main/COPYING" class="license-badge" target="_blank">GPL-2.0-or-later</a>
+      <p>© 2025 DixonRes · Distributed under GNU General Public License v2.0 or later (GPLv2+)</p>
+      <a href="https://github.com/DixonRes/DixonRes/blob/main/COPYING" class="license-badge" target="_blank">GPLv2+</a>
     </div>
   </div>
 </footer>
