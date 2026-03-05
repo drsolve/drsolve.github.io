@@ -323,24 +323,21 @@ footer {
     <li><strong>Extension fields GF(p^k)</strong> — Further optimized for GF(2^8), GF(2^16), GF(2^32), GF(2^64), and GF(2^128).</li>
   </ul>
 
-  
   <hr>
-
+  
   <h2>Dependencies</h2>
-  <table>
-    <tr><th>Library</th><th>Version</th><th>Required</th><th>Notes</th></tr>
-    <tr>
-      <td><a href="https://github.com/flintlib/flint" target="_blank">FLINT</a></td>
-      <td>≥ 3.4.0</td><td>Yes</td>
-      <td>Core arithmetic library</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/vneiger/pml" target="_blank">PML</a></td>
-      <td>latest</td><td>No</td>
-      <td>Accelerates prime field systems; used automatically if available</td>
-    </tr>
-  </table>
-
+  
+  <p>
+    <strong>FLINT</strong> (recommended version: 3.4.0) —
+    Core arithmetic library for modular and polynomial computations.
+  </p>
+  
+  <p>
+    <strong>PML</strong> (optional) —
+    Provides acceleration for prime field polynomial matrix operations;
+    automatically used if detected during compilation.
+  </p>
+  
   <hr>
 
   <h2>License</h2>
