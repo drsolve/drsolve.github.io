@@ -353,6 +353,25 @@ footer {
   <h1>Usage</h1>
   <p class="subtitle">All modes share the same binary: <code>./dixon</code>. Choose a mode below.</p>
 
+<!-- ══ USAGE ══ -->
+<div id="page-usage" class="page">
+  <h1>Usage</h1>
+  <p class="subtitle">
+    All modes use the same binary <code>./dixon</code> and automatically
+    produce a timestamped <code>.dat</code> solution file containing
+    field information, input polynomials, computation time, and results.
+  </p>
+
+  <h2>Output</h2>
+  <ul class="feature-list">
+    <li>Command-line input → <code>solution_YYYYMMDD_HHMMSS.dat</code></li>
+    <li>File input <code>example.dat</code> → <code>example_solution_YYYYMMDD_HHMMSS.dat</code></li>
+  </ul>
+
+  <p class="subtitle">
+    More detailed descriptions of each mode are provided below.
+  </p>
+
   <div class="sub-tabs">
     <button class="active" onclick="showSub(this,'basic')">Basic Resultant</button>
     <button onclick="showSub(this,'solve')">System Solver</button>
