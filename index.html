@@ -315,23 +315,40 @@ footer {
   </div>
 
   <h2>Features</h2>
-  <ul class="feature-list">
-    <li><strong>Dixon resultant computation</strong> — variable elimination for multivariate polynomial systems</li>
-    <li><strong>Polynomial system solver</strong> — solves n×n systems, enumerates all solutions over the given field</li>
-    <li><strong>Ideal reduction mode</strong> — reduces the system via triangular ideal generators during elimination</li>
-    <li>
-      <strong>Prime fields F_p</strong> (p &lt; 2^63) 
-      with FLINT modular arithmetic, optionally accelerated by 
-      <strong>PML</strong> for polynomial matrix operations.
-    </li>
-    <li>
-      <strong>Extension fields GF(p^k)</strong> with support for 
-      custom or default irreducible polynomials; additionally optimized 
-      implementations are provided for binary fields 
-      GF(2^8), GF(2^16), GF(2^32), GF(2^64), and GF(2^128).
-    </li>
-  </ul>
+ <ul class="feature-list">
 
+<li>
+  <strong>Dixon resultant computation</strong> —
+  Variable elimination for multivariate polynomial systems.
+</li>
+
+<li>
+  <strong>Polynomial system solver</strong> —
+  Solves n×n systems and enumerates all solutions over the given field.
+</li>
+
+<li>
+  <strong>Ideal reduction mode</strong> —
+  Reduces systems via triangular ideal generators during elimination.
+</li>
+
+<li>
+  <strong>Prime fields F_p (p &lt; 2^63)</strong> —
+  Implemented with FLINT modular arithmetic, optionally accelerated
+  by PML for polynomial matrix operations.
+</li>
+
+<li>
+  <strong>Extension fields GF(p^k)</strong> —
+  Support custom or default irreducible polynomials; optimized
+  implementations are provided for GF(2^8), GF(2^16), GF(2^32),
+  GF(2^64), and GF(2^128).
+</li>
+
+</ul>
+
+
+  
   <hr>
 
   <h2>Dependencies</h2>
