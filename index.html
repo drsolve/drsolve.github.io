@@ -302,7 +302,7 @@ footer {
       <p>Source code, build instructions, and issue tracker</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.2.tar.gz"> Download v0.0.2</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.2.tar.gz">Download v0.0.2</a>
       <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.0.2/dixon-0.0.2_linux_x86_64.zip">Download Binary</a>
     </div>
   </div>
@@ -312,30 +312,27 @@ footer {
     <li><strong>Dixon resultant computation</strong> — Variable elimination for multivariate polynomial systems.</li>
     <li><strong>Polynomial system solver</strong> — Solves n×n systems and enumerates all solutions over the given field.</li>
     <li><strong>Ideal reduction mode</strong> — Reduces systems via triangular ideal generators during elimination.</li>
-    <li><strong>Prime fields F_p (p &lt; 2^63)</strong> — Implemented with FLINT modular arithmetic, optionally accelerated by PML.</li>
-    <li><strong>Extension fields GF(p^k)</strong> — Further optimized for GF(2^8), GF(2^16), GF(2^32), GF(2^64), and GF(2^128).</li>
+    <li><strong>Complexity analysis</strong> — Estimates Dixon matrix size, Bezout degree bound, and operation count.</li>
+    <li><strong>Prime fields F<sub>p</sub> (p &lt; 2<sup>63</sup>)</strong> — Implemented with FLINT modular arithmetic, optionally accelerated by PML.</li>
+    <li><strong>Extension fields GF(p<sup>k</sup>)</strong> — Further optimized for GF(2<sup>8</sup>), GF(2<sup>16</sup>), GF(2<sup>32</sup>), GF(2<sup>64</sup>), and GF(2<sup>128</sup>).</li>
   </ul>
 
   <hr>
-  
+
   <h2>Dependencies</h2>
-  
+
   <p>
-    <strong>
-      <a href="https://github.com/flintlib/flint" target="_blank">FLINT</a>
-    </strong>
+    <strong><a href="https://github.com/flintlib/flint" target="_blank">FLINT</a></strong>
     (recommended version: 3.4.0) —
     Core arithmetic library for modular and polynomial computations.
   </p>
-  
+
   <p>
-    <strong>
-      <a href="https://github.com/vneiger/pml" target="_blank">PML</a>
-    </strong>
+    <strong><a href="https://github.com/vneiger/pml" target="_blank">PML</a></strong>
     (optional) —
     Accelerates prime field polynomial matrix operations when available.
   </p>
-  
+
   <hr>
 
   <h2>License</h2>
@@ -347,21 +344,20 @@ footer {
   <h1>Usage</h1>
   <p class="subtitle">
     All modes use the same binary <code>./dixon</code> and automatically
-    produce a timestamped <code>.dat</code> solution file containing
+    produce a timestamped <code>.dat</code> output file containing
     field information, input polynomials, computation time, and results.
-  </p>
-  <p class="subtitle">
-    More detailed descriptions of each mode are provided below.
   </p>
 
   <div class="sub-tabs">
     <button class="active" onclick="showSub(this,'basic')">Basic Resultant</button>
     <button onclick="showSub(this,'solve')">System Solver</button>
+    <button onclick="showSub(this,'comp')">Complexity</button>
     <button onclick="showSub(this,'ext')">Extension Fields</button>
     <button onclick="showSub(this,'ideal')">Ideal Reduction</button>
     <button onclick="showSub(this,'file')">File Input</button>
   </div>
 
+  <!-- Basic -->
   <div id="sub-basic" class="sub-page active">
     <h2>Dixon Resultant (Basic)</h2>
     <p>Eliminates variables from a polynomial system and returns the resultant in the remaining variables.</p>
@@ -379,6 +375,7 @@ footer {
     <p>Output: the resultant polynomial in <code>z</code>, written to a <code>.dat</code> file.</p>
   </div>
 
+  <!-- Solver -->
   <div id="sub-solve" class="sub-page">
     <h2>Polynomial System Solver</h2>
     <p>Solves a well-determined system of n equations in n unknowns and enumerates all solutions over the given field.</p>
@@ -399,6 +396,78 @@ footer {
     </div>
   </div>
 
+  <!-- Complexity -->
+  <div id="sub-comp" class="sub-page">
+    <h2>Complexity Analysis</h2>
+    <p>
+      Estimates the difficulty of a Dixon resultant computation <em>without performing any polynomial arithmetic</em>.
+      The tool parses the input, then reports:
+    </p>
+    <ul class="feature-list" style="margin-bottom:20px;">
+      <li>Equation count, variable list, and elimination variable list</li>
+      <li>Total degree of each input polynomial</li>
+      <li>Bezout bound (product of degrees)</li>
+      <li>Dixon matrix size via the Hessenberg recurrence</li>
+      <li>Resultant degree estimate</li>
+      <li>Complexity in log₂ bits: <code>log₂(d · S<sup>ω</sup>)</code>, where S is the matrix size and ω is the matrix-multiplication exponent</li>
+    </ul>
+
+    <p><strong>Syntax</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon --comp <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size
+./dixon -c     <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size</pre>
+    </div>
+
+    <p><strong>Example</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon --comp <span class="str">"x^3+y^3+z^3, x^2*y+y^2*z+z^2*x, x+y+z-1"</span> <span class="str">"x,y"</span> <span class="num">257</span></pre>
+    </div>
+
+    <p><strong>Sample console output</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>=== Complexity Analysis ===
+Equations: 3  |  Variables: 3  |  Eliminate: 2
+All vars : x, y, z
+Degrees  : [3, 3, 1]
+Bezout bound      : 9
+Dixon matrix size : 7
+Resultant deg est : 9  (Bezout bound)
+Complexity (log2) : 6.0875  (omega=2.3)
+Report saved to   : comp_20260308_120000.dat
+===========================</pre>
+    </div>
+
+    <h3>Custom omega</h3>
+    <p>
+      The complexity formula uses a matrix-multiplication exponent ω (default: 2.3).
+      Set a custom value with <code>--omega</code> (or <code>-w</code>):
+    </p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre><span class="cmt"># Theoretical bound ω ≈ 2.373</span>
+./dixon --comp --omega <span class="num">2.373</span> <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size
+
+<span class="cmt"># Short form</span>
+./dixon -c -w <span class="num">2.0</span> <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size</pre>
+    </div>
+    <div class="info-box">
+      Flags may appear in any order before the positional arguments.
+      <code>--silent</code>, <code>--comp</code>, and <code>--omega</code> can be combined freely.
+    </div>
+
+    <h3>Output file</h3>
+    <table>
+      <tr><th>Input method</th><th>Output file</th></tr>
+      <tr><td>Command-line arguments</td><td><code>comp_YYYYMMDD_HHMMSS.dat</code></td></tr>
+      <tr><td>File input <code>example.dat</code></td><td><code>example_comp.dat</code></td></tr>
+    </table>
+    <p>The report file contains all of the above fields plus the omega value used.</p>
+  </div>
+
+  <!-- Extension fields -->
   <div id="sub-ext" class="sub-page">
     <h2>Extension Fields</h2>
     <p>Specify the field as <code>p^k</code>. The generator variable is <code>t</code> by default. FLINT's built-in irreducible polynomial is used unless a custom one is provided.</p>
@@ -421,6 +490,7 @@ footer {
     </table>
   </div>
 
+  <!-- Ideal -->
   <div id="sub-ideal" class="sub-page">
     <h2>Dixon with Ideal Reduction</h2>
     <p>Reduces the polynomial system modulo a triangular ideal before computing the Dixon resultant. Useful for structured systems such as those arising from block cipher analysis.</p>
@@ -440,15 +510,17 @@ footer {
     </div>
   </div>
 
+  <!-- File input -->
   <div id="sub-file" class="sub-page">
     <h2>File Input</h2>
     <p>Pass a <code>.dat</code> file instead of inline arguments for scripted or batch use.</p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./dixon example.dat
-./dixon --solve system.dat</pre>
+./dixon --solve  system.dat
+./dixon --comp   system.dat</pre>
     </div>
-    <h3>Dixon mode — file format</h3>
+    <h3>Dixon mode / Complexity mode — file format</h3>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre><span class="num">257</span>            <span class="cmt"># line 1: field size</span>
@@ -465,7 +537,12 @@ x^2 + y^2 + z^2 - 6  <span class="cmt"># line 2+: n equations in n variables</sp
 x + y + z - 4
 x*y*z - x - 1</pre>
     </div>
-    <p>Output is written to <code>example_solution_YYYYMMDD_HHMMSS.dat</code>.</p>
+    <h3>Output filenames</h3>
+    <table>
+      <tr><th>Mode</th><th>Command-line input</th><th>File input <code>example.dat</code></th></tr>
+      <tr><td>Dixon / Solver</td><td><code>solution_YYYYMMDD_HHMMSS.dat</code></td><td><code>example_solution.dat</code></td></tr>
+      <tr><td>Complexity</td><td><code>comp_YYYYMMDD_HHMMSS.dat</code></td><td><code>example_comp.dat</code></td></tr>
+    </table>
   </div>
 </div>
 
@@ -582,7 +659,6 @@ make help</pre>
       <li>→ Enhanced compilation features / PML library display</li>
       <li>→ Add GPL v2.0 copyright notice</li>
     </ul>
-
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.2.tar.gz">↓ Source code (.tar.gz)</a>
       <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.2.zip">↓ Source code (.zip)</a>
