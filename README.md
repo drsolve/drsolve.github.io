@@ -3,7 +3,7 @@
 A C implementation for computing Dixon resultants and solving polynomial systems over finite fields, based on the FLINT and PML library.
 
 > GitHub Repository:
-> <https://github.com/DixonRes/DixonRes>
+> https://github.com/DixonRes/DixonRes
 
 ---
 
