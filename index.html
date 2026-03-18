@@ -294,7 +294,7 @@ footer {
 <!-- ══ OVERVIEW ══ -->
 <div id="page-home" class="page active">
   <h1>DixonRes: Dixon Resultant &amp; Polynomial System Solver</h1>
-  <p class="subtitle">A C implementation for computing Dixon resultants and solving polynomial systems over finite fields.</p>
+  <p class="subtitle">A C implementation for computing Dixon resultants and solving polynomial systems over finite fields and the rationals.</p>
 
   <div class="repo-card">
     <div class="repo-card-info">
@@ -315,6 +315,7 @@ footer {
     <li><strong>Complexity analysis</strong> — Estimates Dixon matrix size, Bezout degree bound, and operation count.</li>
     <li><strong>Prime fields F<sub>p</sub> (p &lt; 2<sup>63</sup>)</strong> — Implemented with FLINT modular arithmetic, optionally accelerated by PML.</li>
     <li><strong>Extension fields GF(p<sup>k</sup>)</strong> — Further optimized for GF(2^8), GF(2^16), GF(2^32), GF(2^64), and GF(2^128).</li>
+    <li><strong>Rational field Q</strong> — Rational reconstruction via multi-prime CRT.</li>
   </ul>
 
   <hr>
