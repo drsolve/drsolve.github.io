@@ -344,15 +344,18 @@ footer {
 <div id="page-usage" class="page">
   <h1>Usage</h1>
   <p class="subtitle">
-    All modes use the same binary <code>./dixon</code> and automatically
-    produce a timestamped <code>.dat</code> output file containing
-    field information, input polynomials, computation time, and results.
+    All modes use the same binary <code>./dixon</code>. Command-line runs write
+    timestamped <code>solution_YYYYMMDD_HHMMSS.dat</code> or
+    <code>comp_YYYYMMDD_HHMMSS.dat</code>; file input writes
+    <code>example_solution.dat</code> or <code>example_comp.dat</code>.
   </p>
 
   <div class="sub-tabs">
     <button class="active" onclick="showSub(this,'basic')">Basic Resultant</button>
     <button onclick="showSub(this,'solve')">System Solver</button>
     <button onclick="showSub(this,'comp')">Complexity</button>
+    <button onclick="showSub(this,'fieldeq')">Field Equation</button>
+    <button onclick="showSub(this,'random')">Random Mode</button>
     <button onclick="showSub(this,'ext')">Extension Fields</button>
     <button onclick="showSub(this,'ideal')">Ideal Reduction</button>
     <button onclick="showSub(this,'file')">File Input</button>
@@ -367,13 +370,17 @@ footer {
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./dixon <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size</pre>
     </div>
-    <div class="note-box">The number of variables to eliminate must equal the number of equations minus one.</div>
+    <div class="note-box">
+      <code>field_size</code> may be a prime such as <code>257</code>, an extension field such as <code>2^8</code>,
+      a custom extension field such as <code>"2^8: t^8+t^4+t^3+t+1"</code>, or <code>0</code> for ℚ.
+      The number of eliminated variables must equal the number of equations minus one.
+    </div>
     <p><strong>Example</strong> — eliminate x and y from a 3-polynomial system over GF(257):</p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./dixon <span class="str">"x+y+z, x*y+y*z+z*x, x*y*z+1"</span> <span class="str">"x,y"</span> <span class="num">257</span></pre>
     </div>
-    <p>Output: the resultant polynomial in <code>z</code>, written to a <code>.dat</code> file.</p>
+    <p>Output: the resultant polynomial in <code>z</code>, written to a solution <code>.dat</code> file. This is also the mode used for very large prime fields beyond the <code>nmod</code> limit.</p>
   </div>
 
   <!-- Solver -->
@@ -383,18 +390,25 @@ footer {
     <p><strong>Syntax</strong></p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
-      <pre>./dixon --solve <span class="str">"polynomials"</span> field_size</pre>
+      <pre>./dixon --solve <span class="str">"polynomials"</span> field_size
+./dixon --solve-verbose <span class="str">"polynomials"</span> field_size</pre>
     </div>
     <p><strong>Example</strong></p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./dixon --solve <span class="str">"x^2 + y^2 + z^2 - 6, x + y + z - 4, x*y*z - x - 1"</span> <span class="num">257</span></pre>
     </div>
-    <p>Variables are auto-detected from the expressions. Use <code>--silent</code> to suppress console output while still writing the solution file:</p>
+    <div class="info-box">
+      <code>--solve</code> prints a concise summary with candidate sets and verified solutions.
+      <code>--solve-verbose</code> keeps the full elimination and back-substitution log.
+      Variables are auto-detected from the input expressions.
+    </div>
+    <p>Use <code>--silent</code> to suppress console output while still writing the solution file:</p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./dixon --silent --solve <span class="str">"..."</span> <span class="num">257</span></pre>
     </div>
+    <div class="note-box">Currently unavailable for <code>field_size=0</code> and for very large prime fallback fields beyond the <code>nmod</code> limit.</div>
   </div>
 
   <!-- Complexity -->
@@ -432,12 +446,12 @@ footer {
       <pre>=== Complexity Analysis ===
 Equations: 3  |  Variables: 3  |  Eliminate: 2
 All vars : x, y, z
-Degrees  : [3, 3, 1]
-Bezout bound      : 9
-Dixon matrix size : 7
-Resultant deg est : 9  (Bezout bound)
-Complexity (log2) : 6.0875  (omega=2.3)
-Report saved to   : comp_20260308_120000.dat
+Degrees  : [2, 2, 2]
+Bezout bound      : 8
+Dixon matrix size : 5
+Resultant deg est : 8  (Bezout bound)
+Complexity (log2) : 7.9254  (omega=2.3)
+Report saved to   : comp_20260319_192716.dat
 ===========================</pre>
     </div>
 
@@ -458,6 +472,7 @@ Report saved to   : comp_20260308_120000.dat
       Flags may appear in any order before the positional arguments.
       <code>--silent</code>, <code>--comp</code>, and <code>--omega</code> can be combined freely.
     </div>
+    <div class="note-box">Supported over prime fields within the standard backend, extension fields, and ℚ. It is not available in the current large-prime fallback mode.</div>
 
     <h3>Output file</h3>
     <table>
@@ -468,10 +483,53 @@ Report saved to   : comp_20260308_120000.dat
     <p>The report file contains all of the above fields plus the omega value used.</p>
   </div>
 
+  <!-- Field-equation -->
+  <div id="sub-fieldeq" class="sub-page">
+    <h2>Field-equation Reduction</h2>
+    <p>After each multiplication, reduces <code>x^q -&gt; x</code> for every variable. This can be useful for finite-field systems where field equations should be enforced throughout the computation.</p>
+    <p><strong>Syntax</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon --field-equation <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size
+./dixon --field-equation -r <span class="str">"[d1,d2,...,dn]"</span> field_size</pre>
+    </div>
+    <p><strong>Example</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon --field-equation <span class="str">"x0*x2+x1, x0*x1*x2+x2+1, x1*x2+x0+1"</span> <span class="str">"x0,x1"</span> <span class="num">2</span></pre>
+    </div>
+    <div class="info-box">The current binary also accepts the legacy alias <code>--field-eqution</code> for compatibility.</div>
+    <div class="note-box">Not available for <code>field_size=0</code> or for the current large-prime fallback mode.</div>
+  </div>
+
+  <!-- Random -->
+  <div id="sub-random" class="sub-page">
+    <h2>Random Mode</h2>
+    <p>Generates a random polynomial system from a degree list, then runs the selected computation mode on the generated system.</p>
+    <p><strong>Syntax</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon --random <span class="str">"[d1,d2,...,dn]"</span> field_size
+./dixon -r       <span class="str">"[d]*n"</span>          field_size
+./dixon -r --solve <span class="str">"[d1,...,dn]"</span> field_size
+./dixon -r --comp  <span class="str">"[d]*n"</span>        field_size</pre>
+    </div>
+    <p><strong>Examples</strong></p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./dixon --random <span class="str">"[3,3,2]"</span> <span class="num">257</span>
+./dixon -r <span class="str">"[3]*3"</span> <span class="num">0</span>
+./dixon -r --solve <span class="str">"[2]*3"</span> <span class="num">257</span>
+./dixon -r --comp --omega <span class="num">2.373</span> <span class="str">"[4]*4"</span> <span class="num">257</span></pre>
+    </div>
+    <div class="info-box">Random systems use auto-generated variable names such as <code>x0</code>, <code>x1</code>, … and write the same solution/complexity files as manual input.</div>
+    <div class="note-box">Random mode is not available in the current large-prime fallback mode. Over ℚ, it can be combined with basic Dixon and <code>--comp</code>, but not with <code>--solve</code>.</div>
+  </div>
+
   <!-- Extension fields -->
   <div id="sub-ext" class="sub-page">
     <h2>Extension Fields</h2>
-    <p>Specify the field as <code>p^k</code>. The generator variable is <code>t</code> by default. FLINT's built-in irreducible polynomial is used unless a custom one is provided.</p>
+    <p>Specify the field as <code>p^k</code>. The generator variable is <code>t</code> by default, and the current CLI prints the irreducible polynomial chosen by FLINT unless a custom polynomial is provided.</p>
     <p><strong>Default polynomial</strong></p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
@@ -498,17 +556,21 @@ Report saved to   : comp_20260308_120000.dat
     <p><strong>Syntax</strong></p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
-      <pre>./dixon <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> <span class="str">"ideal_generators"</span> field_size</pre>
+      <pre>./dixon --ideal <span class="str">"ideal_generators"</span> <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size
+./dixon --ideal input_file</pre>
     </div>
     <p><strong>Example</strong></p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./dixon \
-  <span class="str">"a1^2 + a2^2 + a3^2 + a4^2 - 10, a4^3 - a1 - a2*a3 - 5"</span> \
-  <span class="str">"a4"</span> \
-  <span class="str">"a2^3 = 2*a1 + 1, a3^3 = a1*a2 + 3, a4^3 = a1 + a2*a3 + 5"</span> \
+  --ideal \
+  <span class="str">"a2^3=2*a1+1, a3^3=a1*a2+3"</span> \
+  <span class="str">"a1^2+a2^2+a3^2-10, a3^3-a1*a2-3"</span> \
+  <span class="str">"a3"</span> \
   <span class="num">257</span></pre>
     </div>
+    <div class="info-box">In file mode, lines containing <code>=</code> are parsed as ideal generators and the remaining non-empty lines are parsed as system polynomials.</div>
+    <div class="note-box">Not available for <code>field_size=0</code> or for the current large-prime fallback mode.</div>
   </div>
 
   <!-- File input -->
@@ -519,7 +581,9 @@ Report saved to   : comp_20260308_120000.dat
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./dixon example.dat
 ./dixon --solve  system.dat
-./dixon --comp   system.dat</pre>
+./dixon --comp   system.dat
+./dixon --ideal  ideal.dat
+./dixon --field-equation system.dat</pre>
     </div>
     <h3>Dixon mode / Complexity mode — file format</h3>
     <div class="code-block">
@@ -538,22 +602,33 @@ x^2 + y^2 + z^2 - 6  <span class="cmt"># line 2+: n equations in n variables</sp
 x + y + z - 4
 x*y*z - x - 1</pre>
     </div>
+    <h3>Ideal reduction — file format</h3>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre><span class="num">257</span>                <span class="cmt"># line 1: field size</span>
+a2^3=2*a1+1          <span class="cmt"># lines 2..n-1 with '=' are ideal generators</span>
+a3^3=a1*a2+3
+a1^2+a2^2+a3^2-10    <span class="cmt"># lines 2..n-1 without '=' are system polynomials</span>
+a3^3-a1*a2-3
+a3                   <span class="cmt"># last line: variables to eliminate</span></pre>
+    </div>
     <h3>Output filenames</h3>
     <table>
       <tr><th>Mode</th><th>Command-line input</th><th>File input <code>example.dat</code></th></tr>
       <tr><td>Dixon / Solver</td><td><code>solution_YYYYMMDD_HHMMSS.dat</code></td><td><code>example_solution.dat</code></td></tr>
       <tr><td>Complexity</td><td><code>comp_YYYYMMDD_HHMMSS.dat</code></td><td><code>example_comp.dat</code></td></tr>
     </table>
+    <p><code>--ideal</code> and <code>--field-equation</code> also use the solution filename pattern.</p>
   </div>
 </div>
 
 <!-- ══ FIELDS ══ -->
 <div id="page-fields" class="page">
-  <h1>Finite Field Support</h1>
-  <p class="subtitle">DixonRes supports prime fields and extension fields. All arithmetic uses FLINT, with optional PML acceleration for prime field systems.</p>
+  <h1>Field Support</h1>
+  <p class="subtitle">DixonRes currently supports prime fields, extension fields, and ℚ. Arithmetic uses FLINT throughout, with optional PML acceleration for suitable prime-field computations.</p>
 
   <h2>Prime fields — F<sub>p</sub></h2>
-  <p>Any prime p with p &lt; 2<sup>63</sup> is supported. Specify the field as a plain integer.</p>
+  <p>Specify a prime field as a plain integer such as <code>257</code>. For primes within the standard <code>nmod</code> backend, all finite-field modes are available.</p>
   <div class="code-block">
     <button class="copy-btn" onclick="copyPre(this)">copy</button>
     <pre>./dixon --solve <span class="str">"..."</span> <span class="num">257</span>
@@ -561,30 +636,44 @@ x*y*z - x - 1</pre>
 ./dixon --solve <span class="str">"..."</span> <span class="num">4294967311</span></pre>
   </div>
   <p>When the optional <a href="https://github.com/vneiger/pml" target="_blank">PML library</a> is installed and detected at configure time, polynomial matrix operations are automatically accelerated for well-determined prime field systems.</p>
+  <div class="info-box">For very large primes beyond the <code>nmod</code> limit, the current release still computes Dixon resultants by reconstructing over ℚ and then reducing modulo the target prime.</div>
+  <div class="note-box">That large-prime fallback is currently limited to the basic Dixon resultant mode. <code>--solve</code>, <code>--comp</code>, <code>--random</code>, <code>--ideal</code>, and <code>--field-equation</code> are not available there yet.</div>
 
   <hr>
 
   <h2>Extension fields — F<sub>p<sup>k</sup></sub></h2>
-  <p>Specified as <code>p^k</code>. The generator is the variable <code>t</code>, satisfying a chosen irreducible polynomial over F<sub>p</sub>. FLINT's built-in default is used if no polynomial is provided.</p>
+  <p>Specify an extension field as <code>p^k</code>. The generator is <code>t</code> by default, and FLINT's built-in irreducible polynomial is used unless a custom one is provided.</p>
   <div class="code-block">
     <button class="copy-btn" onclick="copyPre(this)">copy</button>
     <pre><span class="cmt"># FLINT default polynomial</span>
-./dixon <span class="str">"..."</span> <span class="num">2^8</span>
+./dixon <span class="str">"..."</span> <span class="str">"x"</span> <span class="num">2^8</span>
 
 <span class="cmt"># Custom polynomial</span>
-./dixon <span class="str">"..."</span> <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span></pre>
+./dixon --solve <span class="str">"x^2+t*y, x*y+t^2"</span> <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span></pre>
   </div>
-  <div class="info-box">Extension fields are slower than prime fields due to polynomial arithmetic overhead. PML acceleration does not apply to extension field computations.</div>
+  <div class="info-box">Extension fields are slower than prime fields because arithmetic is carried out modulo an irreducible polynomial. PML acceleration does not apply here.</div>
+  <div class="note-box">Extension fields whose characteristic exceeds the <code>nmod</code> limit are not supported in the current release.</div>
+
+  <hr>
+
+  <h2>Rational field — ℚ</h2>
+  <p>Use <code>field_size=0</code> to work over the rationals. DixonRes reconstructs exact rational results from modular images.</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>./dixon <span class="str">"x^2+y^2+z^2-1, x^2+y^2-2*z^2, x+y+z"</span> <span class="str">"x,y"</span> <span class="num">0</span>
+./dixon --comp <span class="str">"x^3+y^3+z^3, x^2*y+y^2*z+z^2*x, x+y+z-1"</span> <span class="str">"x,y"</span> <span class="num">0</span></pre>
+  </div>
+  <div class="note-box">In the current release, ℚ supports the basic Dixon resultant and <code>--comp</code> only. <code>--solve</code>, <code>--ideal</code>, and <code>--field-equation</code> are not implemented over ℚ yet.</div>
 
   <h3>Common examples</h3>
   <table>
-    <tr><th>Field</th><th>Argument</th><th>Notes</th></tr>
-    <tr><td>GF(257)</td><td><code>257</code></td><td>Prime field</td></tr>
-    <tr><td>GF(65537)</td><td><code>65537</code></td><td>Prime field (Fermat prime)</td></tr>
-    <tr><td>GF(2<sup>8</sup>)</td><td><code>2^8</code></td><td>FLINT default polynomial</td></tr>
-    <tr><td>GF(2<sup>8</sup>) AES</td><td><code>"2^8: t^8+t^4+t^3+t+1"</code></td><td>AES field polynomial</td></tr>
-    <tr><td>GF(3<sup>5</sup>)</td><td><code>3^5</code></td><td>FLINT default polynomial</td></tr>
-    <tr><td>GF(2<sup>16</sup>)</td><td><code>2^16</code></td><td>FLINT default polynomial</td></tr>
+    <tr><th>Field type</th><th>Example argument</th><th>Current status</th></tr>
+    <tr><td>Prime field within <code>nmod</code> range</td><td><code>257</code></td><td>All main modes available</td></tr>
+    <tr><td>Very large prime field</td><td><code>340282366920938463463374607431768211507</code></td><td>Basic Dixon resultant only</td></tr>
+    <tr><td>GF(2<sup>8</sup>)</td><td><code>2^8</code></td><td>FLINT default irreducible polynomial</td></tr>
+    <tr><td>GF(2<sup>8</sup>) with AES polynomial</td><td><code>"2^8: t^8+t^4+t^3+t+1"</code></td><td>Custom polynomial supported</td></tr>
+    <tr><td>GF(3<sup>5</sup>)</td><td><code>3^5</code></td><td>Extension field with FLINT default polynomial</td></tr>
+    <tr><td>ℚ</td><td><code>0</code></td><td>Basic Dixon resultant and <code>--comp</code></td></tr>
   </table>
 </div>
 
