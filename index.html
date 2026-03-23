@@ -120,7 +120,7 @@ hr { border: none; border-top: 1px solid #e5e5e5; margin: 32px 0; }
   gap: 10px;
   align-items: baseline;
 }
-.feature-list li::before { content: "→"; color: #aaa; flex-shrink: 0; font-size: 13px; }
+.feature-list li::before { content: "-"; color: #aaa; flex-shrink: 0; font-size: 13px; }
 
 /* ── CODE ── */
 pre, code {
@@ -305,7 +305,7 @@ footer {
   
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;">
     <span style="background: #eef3ff; color: #4466aa; border: 1px solid #d0deff; padding: 10px 10px; border-radius: 6px; font-family: monospace; font-weight: bold; font-size: 13px; margin-right: 4px;">
-      Download v0.1.1
+      release v0.1.1
     </span>
 
     <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.1.tar.gz" style="background:#333; color:#fff; border:1px solid #333;">
@@ -325,7 +325,6 @@ footer {
     <li><strong>Prime fields F<sub>p</sub> (any size)</strong> — Implemented with FLINT modular arithmetic, optionally accelerated by PML.</li>
     <li><strong>Extension fields GF(p<sup>k</sup>)</strong> — Further optimized for GF(2^8), GF(2^16), GF(2^32), GF(2^64), GF(2^128).</li>
     <li><strong>Rational field ℚ</strong> — Rational reconstruction via multi-prime CRT.</li>
-    <li><strong>SageMath interface</strong> — Call DixonRes directly from SageMath via <code>dixon_sage_interface.sage</code>.</li>
   </ul>
 
   <hr>
@@ -955,16 +954,16 @@ make help</pre>
       <span style="font-size:13px;color:#888;font-family:monospace;">2026-03-23</span>
     </div>
     <ul style="list-style:none;font-size:14px;color:#333;margin-bottom:20px;display:flex;flex-direction:column;gap:6px;">
-      <li>→ Add SageMath interface</li>
-      <li>→ Support macOS</li>
-      <li>→ Support old versions of FLINT</li>
-      <li>→ Enhance compilation options and PML support</li>
+      <li>- Add SageMath interface</li>
+      <li>- Support macOS</li>
+      <li>- Support old versions of FLINT</li>
+      <li>- Enhance compilation options and PML support</li>
     </ul>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.1.tar.gz">↓ Source code (.tar.gz)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.1.zip">↓ Source code (.zip)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.1/dixon-0.1.1-linux-x86_64.zip">↓ Binary (.zip, Linux x86_64)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.1/dixon-0.1.1-macos15.7-arm64.zip">↓ Binary (.zip, MacOS arm64)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.1.tar.gz"> Source code (.tar.gz)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.1.zip"> Source code (.zip)</a>
+      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.1/dixon-0.1.1-linux-x86_64.zip"> Binary (.zip, Linux x86_64)</a>
+      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.1/dixon-0.1.1-macos15.7-arm64.zip"> Binary (.zip, MacOS arm64)</a>
     </div>
   </div>
   <!-- v0.1.0 -->
@@ -974,16 +973,16 @@ make help</pre>
       <span style="font-size:13px;color:#888;font-family:monospace;">2026-03-19</span>
     </div>
     <ul style="list-style:none;font-size:14px;color:#333;margin-bottom:20px;display:flex;flex-direction:column;gap:6px;">
-      <li>→ Support prime fields of arbitrary size via multi-prime CRT</li>
-      <li>→ Significantly adjust and simplify the output</li>
-      <li>→ Improve evaluation logic for maximum rank submatrix</li>
-      <li>→ Add functionality to find rational roots</li>
+      <li>- Support prime fields of arbitrary size via multi-prime CRT</li>
+      <li>- Significantly adjust and simplify the output</li>
+      <li>- Improve evaluation logic for maximum rank submatrix</li>
+      <li>- Add functionality to find rational roots</li>
     </ul>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.0.tar.gz">↓ Source code (.tar.gz)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.0.zip">↓ Source code (.zip)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.0/dixon-0.1.0_linux_x86_64.zip">↓ Binary (.zip, Linux x86_64)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.0/dixon-0.1.0_windows_x86_64.zip">↓ Binary (.zip, Windows x86_64)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.0.tar.gz"> Source code (.tar.gz)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.0.zip"> Source code (.zip)</a>
+      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.0/dixon-0.1.0_linux_x86_64.zip"> Binary (.zip, Linux x86_64)</a>
+      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.0/dixon-0.1.0_windows_x86_64.zip"> Binary (.zip, Windows x86_64)</a>
     </div>
   </div>
   <!-- v0.0.5 -->
@@ -993,12 +992,12 @@ make help</pre>
       <span style="font-size:13px;color:#888;font-family:monospace;">2026-03-18</span>
     </div>
     <ul style="list-style:none;font-size:14px;color:#333;margin-bottom:20px;display:flex;flex-direction:column;gap:6px;">
-      <li>→ ℚ support: rational reconstruction via multi-prime CRT (experimental)</li>
+      <li>- ℚ support: rational reconstruction via multi-prime CRT (experimental)</li>
     </ul>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.5.tar.gz">↓ Source code (.tar.gz)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.5.zip">↓ Source code (.zip)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.0.5/dixon-0.0.5_linux_x86_64.zip">↓ Binary (.zip, Linux x86_64)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.5.tar.gz"> Source code (.tar.gz)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.5.zip"> Source code (.zip)</a>
+      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.0.5/dixon-0.0.5_linux_x86_64.zip"> Binary (.zip, Linux x86_64)</a>
     </div>
   </div>
   <!-- v0.0.4 -->
@@ -1008,14 +1007,14 @@ make help</pre>
       <span style="font-size:13px;color:#888;font-family:monospace;">2026-03-17</span>
     </div>
     <ul style="list-style:none;font-size:14px;color:#333;margin-bottom:20px;display:flex;flex-direction:column;gap:6px;">
-      <li>→ Add Field-equation reduction mode (Experimental feature)</li>
-      <li>→ Add make check option</li>
-      <li>→ Remove some old redundant functions</li>
+      <li>- Add Field-equation reduction mode (Experimental feature)</li>
+      <li>- Add make check option</li>
+      <li>- Remove some old redundant functions</li>
     </ul>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.4.tar.gz">↓ Source code (.tar.gz)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.4.zip">↓ Source code (.zip)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.0.4/dixon-0.0.4_linux_x86_64.zip">↓ Binary (.zip, Linux x86_64)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.4.tar.gz"> Source code (.tar.gz)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.4.zip"> Source code (.zip)</a>
+      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.0.4/dixon-0.0.4_linux_x86_64.zip"> Binary (.zip, Linux x86_64)</a>
     </div>
   </div>
 
@@ -1026,14 +1025,14 @@ make help</pre>
       <span style="font-size:13px;color:#888;font-family:monospace;">2026-03-09</span>
     </div>
     <ul style="list-style:none;font-size:14px;color:#333;margin-bottom:20px;display:flex;flex-direction:column;gap:6px;">
-      <li>→ Add random mode</li>
-      <li>→ Add complexity analysis features</li>
-      <li>→ Support for More Variables in GF(2^n) Arithmetic</li>
+      <li>- Add random mode</li>
+      <li>- Add complexity analysis features</li>
+      <li>- Support for More Variables in GF(2^n) Arithmetic</li>
     </ul>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.3.tar.gz">↓ Source code (.tar.gz)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.3.zip">↓ Source code (.zip)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.0.3/dixon-0.0.3_linux_x86_64.zip">↓ Binary (.zip, Linux x86_64)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.3.tar.gz"> Source code (.tar.gz)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.3.zip"> Source code (.zip)</a>
+      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.0.3/dixon-0.0.3_linux_x86_64.zip"> Binary (.zip, Linux x86_64)</a>
     </div>
   </div>
   
@@ -1045,14 +1044,14 @@ make help</pre>
     </div>
     <p style="margin-bottom:16px;font-size:13px;color:#555;">Bug fixes &amp; compilation improvements only. No performance or functional changes.</p>
     <ul style="list-style:none;font-size:14px;color:#333;margin-bottom:20px;display:flex;flex-direction:column;gap:6px;">
-      <li>→ Fix memory leak issue</li>
-      <li>→ Enhanced compilation features / PML library display</li>
-      <li>→ Add GPL v2.0 copyright notice</li>
+      <li>- Fix memory leak issue</li>
+      <li>- Enhanced compilation features / PML library display</li>
+      <li>- Add GPL v2.0 copyright notice</li>
     </ul>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.2.tar.gz">↓ Source code (.tar.gz)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.2.zip">↓ Source code (.zip)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.0.2/dixon-0.0.2_linux_x86_64.zip">↓ Binary (.zip, Linux x86_64)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.2.tar.gz"> Source code (.tar.gz)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.0.2.zip"> Source code (.zip)</a>
+      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.0.2/dixon-0.0.2_linux_x86_64.zip"> Binary (.zip, Linux x86_64)</a>
     </div>
   </div>
 
@@ -1065,9 +1064,9 @@ make help</pre>
     </div>
     <p style="margin-bottom:16px;font-size:13px;color:#555;">CRYPTO 2026 paper submission version. Includes a FLINT-based C implementation of Dixon resultants and a finite-field polynomial system solver, with CLI/file input and automatic solution outputs.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/0.0.1.tar.gz">↓ Source code (.tar.gz)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/0.0.1.zip">↓ Source code (.zip)</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/0.0.1/dixon-0.0.1_linux_x86_64.zip">↓ Binary (.zip, Linux x86_64)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/0.0.1.tar.gz"> Source code (.tar.gz)</a>
+      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/0.0.1.zip"> Source code (.zip)</a>
+      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/0.0.1/dixon-0.0.1_linux_x86_64.zip"> Binary (.zip, Linux x86_64)</a>
     </div>
   </div>
 </div>
