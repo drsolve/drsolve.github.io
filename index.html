@@ -297,18 +297,26 @@ footer {
   <h1>DixonRes: Dixon Resultant &amp; Polynomial System Solver</h1>
   <p class="subtitle">A C implementation for computing Dixon resultants and solving polynomial systems over finite fields and ℚ.</p>
 
-  <div class="repo-card">
-    <div class="repo-card-info">
-      <strong>GitHub Repo — </strong> 
-      <strong><a href="https://github.com/DixonRes/DixonRes" target="_blank">https://github.com/DixonRes/DixonRes</a></strong>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.1.tar.gz">Download v0.1.1</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.1/dixon-0.1.1-linux-x86_64.zip">Linux Binary</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.1/dixon-0.1.1-macos15.7-arm64.zip">MacOS Binary</a>
-      <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.0/dixon-0.1.0_windows_x86_64.zip">Windows GUI</a>
-    </div>
+<div class="repo-card">
+  <div class="repo-card-info">
+    <strong>GitHub Repo — </strong>  
+    <strong><a href="https://github.com/DixonRes/DixonRes" target="_blank">https://github.com/DixonRes/DixonRes</a></strong>
   </div>
+  
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;">
+    <span style="background: #eef3ff; color: #4466aa; border: 1px solid #d0deff; padding: 10px 10px; border-radius: 6px; font-family: monospace; font-weight: bold; font-size: 13px; margin-right: 4px;">
+      release v0.1.1
+    </span>
+
+    <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.1.tar.gz" style="background:#333; color:#fff; border:1px solid #333;">
+      Source Code
+    </a>
+    
+    <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.1/dixon-0.1.1-linux-x86_64.zip">Linux Binary</a>
+    <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.1/dixon-0.1.1-macos15.7-arm64.zip">macOS Binary</a>
+    <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.0/dixon-0.1.0_windows_x86_64.zip">Windows GUI</a>
+  </div>
+</div>
 
   <h2>Features</h2>
   <ul class="feature-list">
@@ -317,6 +325,7 @@ footer {
     <li><strong>Prime fields F<sub>p</sub> (any size)</strong> — Implemented with FLINT modular arithmetic, optionally accelerated by PML.</li>
     <li><strong>Extension fields GF(p<sup>k</sup>)</strong> — Further optimized for GF(2^8), GF(2^16), GF(2^32), GF(2^64), GF(2^128).</li>
     <li><strong>Rational field ℚ</strong> — Rational reconstruction via multi-prime CRT.</li>
+    <li><strong>SageMath interface</strong> — Call DixonRes directly from SageMath via <code>dixon_sage_interface.sage</code>.</li>
   </ul>
 
   <hr>
