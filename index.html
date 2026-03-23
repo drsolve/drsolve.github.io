@@ -283,6 +283,7 @@ footer {
     <li><button class="active" onclick="showPage('home')">Overview</button></li>
     <li><button onclick="showPage('usage')">Usage</button></li>
     <li><button onclick="showPage('fields')">Fields</button></li>
+    <li><button onclick="showPage('sage')">SageMath</button></li>
     <li><button onclick="showPage('install')">Install</button></li>
     <li><button onclick="showPage('downloads')">Downloads</button></li>
   </ul>
@@ -315,6 +316,7 @@ footer {
     <li><strong>Prime fields F<sub>p</sub> (any size)</strong> — Implemented with FLINT modular arithmetic, optionally accelerated by PML.</li>
     <li><strong>Extension fields GF(p<sup>k</sup>)</strong> — Further optimized for GF(2^8), GF(2^16), GF(2^32), GF(2^64), GF(2^128).</li>
     <li><strong>Rational field ℚ</strong> — Rational reconstruction via multi-prime CRT.</li>
+    <li><strong>SageMath interface</strong> — Call DixonRes directly from SageMath via <code>dixon_sage_interface.sage</code>.</li>
   </ul>
 
   <hr>
@@ -676,6 +678,207 @@ a3                   <span class="cmt"># last line: variables to eliminate</span
   </table>
 </div>
 
+<!-- ══ SAGEMATH ══ -->
+<div id="page-sage" class="page">
+  <h1>SageMath Interface</h1>
+  <p class="subtitle">
+    <code>dixon_sage_interface.sage</code> is a thin wrapper that lets you call DixonRes
+    directly from a SageMath session. Polynomials are passed as native Sage objects;
+    the interface handles serialisation, subprocess invocation, and output parsing automatically.
+  </p>
+
+  <div class="info-box">
+    The interface file <code>dixon_sage_interface.sage</code> is included in the DixonRes repository
+    and in the v0.1.1 source archive. The DixonRes binary must be built and accessible before use.
+  </div>
+
+  <h2>Setup</h2>
+  <p>Load the interface once per session and set the path to the <code>dixon</code> binary:</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre><span class="kw">load</span>(<span class="str">"dixon_sage_interface.sage"</span>)
+set_dixon_path(<span class="str">"./dixon"</span>)   <span class="cmt"># set once; all subsequent calls use this path</span></pre>
+  </div>
+  <p>
+    <code>set_dixon_path()</code> sets a module-level default, so you never need to pass
+    <code>dixon_path=</code> explicitly unless you want to override it for a single call.
+    The current value can be read back with <code>get_dixon_path()</code>.
+  </p>
+
+  <hr>
+
+  <h2>Functions</h2>
+
+  <h3>DixonResultant</h3>
+  <p>Compute the Dixon resultant, eliminating the specified variables.</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>DixonResultant(F, elim_vars, field_size=<span class="kw">None</span>, dixon_path=<span class="kw">None</span>,
+               finput=<span class="str">"/tmp/dixon_in.dat"</span>, debug=<span class="kw">False</span>, timeout=<span class="num">600</span>)</pre>
+  </div>
+  <table>
+    <tr><th>Parameter</th><th>Description</th></tr>
+    <tr><td><code>F</code></td><td>List of Sage polynomials and/or plain strings</td></tr>
+    <tr><td><code>elim_vars</code></td><td>Variables to eliminate (Sage vars or strings)</td></tr>
+    <tr><td><code>field_size</code></td><td>Prime, prime power, <code>(p,k)</code> tuple, <code>GF(...)</code> object, or <code>0</code> for ℚ. Inferred automatically from <code>F[0].base_ring()</code> if <code>None</code>.</td></tr>
+    <tr><td><code>dixon_path</code></td><td>Path to binary; falls back to <code>set_dixon_path()</code> default if <code>None</code></td></tr>
+    <tr><td><code>debug</code></td><td>Print detailed diagnostics including input/output file contents</td></tr>
+    <tr><td><code>timeout</code></td><td>Abort after this many seconds (default 600)</td></tr>
+  </table>
+  <p><strong>Returns:</strong> resultant as a raw string, or <code>None</code> on failure.</p>
+
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre><span class="cmt"># Basic resultant — field inferred from polynomial ring</span>
+R.&lt;x, y, z&gt; = GF(<span class="num">257</span>)[]
+F = [x + y + z - <span class="num">3</span>, x*y + y*z + z*x - <span class="num">3</span>, x*y*z - <span class="num">1</span>]
+res = DixonResultant(F, [x, y])
+<span class="kw">print</span>(res)</pre>
+  </div>
+
+  <hr>
+
+  <h3>DixonSolve</h3>
+  <p>Solve a polynomial system and enumerate all solutions.</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>DixonSolve(F, field_size=<span class="kw">None</span>, dixon_path=<span class="kw">None</span>,
+           finput=<span class="str">"/tmp/dixon_solve_in.dat"</span>, debug=<span class="kw">False</span>, timeout=<span class="num">600</span>)</pre>
+  </div>
+  <p><strong>Returns:</strong></p>
+  <ul class="feature-list">
+    <li><code>list of dict</code> — one <code>{var_name: value_str}</code> dict per solution</li>
+    <li><code>[]</code> — system has no solutions</li>
+    <li><code>"infinite"</code> — positive-dimensional (infinitely many solutions)</li>
+    <li><code>None</code> — failure</li>
+  </ul>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>R.&lt;x, y, z&gt; = GF(<span class="num">257</span>)[]
+F = [x + y + z - <span class="num">3</span>, x*y + y*z + z*x - <span class="num">3</span>, x*y*z - <span class="num">1</span>]
+sols = DixonSolve(F)
+<span class="kw">for</span> s <span class="kw">in</span> sols:
+    <span class="kw">print</span>(s)</pre>
+  </div>
+
+  <hr>
+
+  <h3>DixonComplexity</h3>
+  <p>Run complexity analysis without performing any polynomial arithmetic.</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>DixonComplexity(F, elim_vars, field_size=<span class="kw">None</span>, omega=<span class="kw">None</span>,
+                dixon_path=<span class="kw">None</span>, finput=<span class="str">"/tmp/dixon_comp_in.dat"</span>,
+                debug=<span class="kw">False</span>, timeout=<span class="num">120</span>)</pre>
+  </div>
+  <p><strong>Returns:</strong> a dict with keys <code>complexity_log2</code>, <code>omega</code>, <code>bezout_bound</code>, <code>matrix_size</code>, <code>degrees</code>, or <code>None</code> on failure.</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>info = DixonComplexity(F, [x, y])
+<span class="kw">print</span>(info)
+<span class="cmt"># {'complexity_log2': 7.93, 'omega': 2.3, 'bezout_bound': 8,</span>
+<span class="cmt">#  'matrix_size': 5, 'degrees': [1, 2, 3]}</span></pre>
+  </div>
+
+  <hr>
+
+  <h3>DixonIdeal</h3>
+  <p>Dixon resultant with triangular ideal reduction.</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>DixonIdeal(F, ideal_gens, elim_vars, field_size=<span class="kw">None</span>,
+           dixon_path=<span class="kw">None</span>, debug=<span class="kw">False</span>, timeout=<span class="num">600</span>)</pre>
+  </div>
+  <p>
+    <code>ideal_gens</code> is a list of strings of the form <code>"a^3=2*b+1"</code>
+    or equivalent Sage expressions. Returns the resultant string or <code>None</code>.
+  </p>
+
+  <hr>
+
+  <h2>Field size argument</h2>
+  <p>
+    All functions accept <code>field_size</code> in any of these forms.
+    When <code>field_size=None</code> and <code>F</code> contains at least one Sage polynomial,
+    the base ring is inferred automatically.
+  </p>
+  <table>
+    <tr><th>Value</th><th>Meaning</th></tr>
+    <tr><td><code>None</code></td><td>Inferred from <code>F[0].base_ring()</code></td></tr>
+    <tr><td><code>257</code> or <code>"257"</code></td><td>GF(257)</td></tr>
+    <tr><td><code>(2, 8)</code></td><td>GF(2<sup>8</sup>)</td></tr>
+    <tr><td><code>"2^8"</code></td><td>GF(2<sup>8</sup>)</td></tr>
+    <tr><td><code>GF(257)</code></td><td>GF(257) object passed directly</td></tr>
+    <tr><td><code>0</code></td><td>Rational field ℚ</td></tr>
+  </table>
+
+  <hr>
+
+  <h2>Examples</h2>
+
+  <h3>Basic resultant and solver</h3>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre><span class="kw">load</span>(<span class="str">"dixon_sage_interface.sage"</span>)
+set_dixon_path(<span class="str">"./dixon"</span>)
+
+R.&lt;x, y, z&gt; = GF(<span class="num">257</span>)[]
+F = [x + y + z - <span class="num">3</span>, x*y + y*z + z*x - <span class="num">3</span>, x*y*z - <span class="num">1</span>]
+
+res  = DixonResultant(F, [x, y])
+sols = DixonSolve(F)
+info = DixonComplexity(F, [x, y])
+
+<span class="kw">print</span>(res)
+<span class="kw">print</span>(sols)
+<span class="kw">print</span>(info)</pre>
+  </div>
+
+  <h3>Iterative / cascaded elimination</h3>
+  <p>
+    The output of <code>DixonResultant</code> is a plain string and can be passed directly
+    as an element of <code>F</code> in a subsequent call. This enables variable-by-variable
+    elimination over large systems.
+  </p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre><span class="kw">load</span>(<span class="str">"dixon_sage_interface.sage"</span>)
+set_dixon_path(<span class="str">"./dixon"</span>)
+
+R.&lt;x, y, z&gt; = GF(<span class="num">17</span>)[]
+f1 = x + y + z
+f2 = x*y + y*z + z*x + <span class="num">1</span>
+f3 = y*z - <span class="num">1</span>
+f4 = z - <span class="num">2</span>
+
+res1 = DixonResultant([f1, f2], [x])
+res2 = DixonResultant([res1, f3], [y])
+res3 = DixonResultant([res2, f4], [z])
+
+<span class="kw">print</span>(<span class="str">"res1 ="</span>, res1)
+<span class="kw">print</span>(<span class="str">"res2 ="</span>, res2)
+<span class="kw">print</span>(<span class="str">"res3 ="</span>, res3)</pre>
+  </div>
+
+  <h3>Debug mode</h3>
+  <p>Pass <code>debug=True</code> to any function to print the input file, command, and raw output for diagnosis:</p>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>res = DixonResultant(F, [x, y], debug=<span class="kw">True</span>)</pre>
+  </div>
+
+  <hr>
+
+  <h2>Helper functions</h2>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>set_dixon_path(path)</code></td><td>Set the default path to the <code>dixon</code> binary</td></tr>
+    <tr><td><code>get_dixon_path()</code></td><td>Return the currently configured default path</td></tr>
+    <tr><td><code>ToDixon(F, elim_vars, field_size, finput)</code></td><td>Write a Dixon/complexity input file without running the binary</td></tr>
+    <tr><td><code>ToDixonSolver(F, field_size, finput)</code></td><td>Write a solver input file without running the binary</td></tr>
+  </table>
+</div>
+
 <!-- ══ INSTALL ══ -->
 <div id="page-install" class="page">
   <h1>Installation</h1>
@@ -866,11 +1069,13 @@ make help</pre>
 </footer>
 
 <script>
+const PAGE_IDS = ['home','usage','fields','sage','install','downloads'];
+
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
-  const idx = ['home','usage','fields','install','downloads'].indexOf(id);
+  const idx = PAGE_IDS.indexOf(id);
   if (idx >= 0) document.querySelectorAll('.nav-tabs button')[idx].classList.add('active');
   window.scrollTo(0, 0);
 }
