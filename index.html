@@ -1140,7 +1140,7 @@ function togglePlay() {
     btn.textContent = '⏸ Pause';
   } else {
     audio.pause();
-    btn.textContent = '▶  Play';
+    btn.textContent = '▶\u00A0\u00A0Play';
   }
   audio.onended = () => { btn.textContent = '🎶 Music'; };
 }
