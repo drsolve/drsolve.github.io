@@ -289,7 +289,6 @@ footer {
   </ul>
   <div class="nav-right">
     <div id="music-wrapper" style="position:relative;margin-right:10px;">
-      <!-- Play button (default state) -->
       <button id="play-btn" onclick="togglePlay()" style="
         background:none; border:1px solid #ddd; border-radius:4px;
         padding:5px 12px; font-size:13px; color:#555; cursor:pointer;
@@ -299,7 +298,6 @@ footer {
         🎵 Music
       </button>
 
-      <!-- Dropdown trigger (shown after song ends) -->
       <button id="music-select-btn" onclick="toggleMusicMenu()" style="
         display:none; background:none; border:1px solid #ddd; border-radius:4px;
         padding:5px 12px; font-size:13px; color:#555; cursor:pointer;
@@ -309,29 +307,22 @@ footer {
         🎶 Music ▾
       </button>
 
-      <!-- Dropdown menu -->
       <div id="music-menu" style="
         display:none; position:absolute; right:0; top:calc(100% + 4px);
         background:#fff; border:1px solid #ddd; border-radius:5px;
-        box-shadow:0 4px 12px rgba(0,0,0,0.10); min-width:170px; z-index:100;
+        box-shadow:0 4px 12px rgba(0,0,0,0.10); min-width:160px; z-index:100;
         overflow:hidden;
       ">
-        <div id="menu-item-0" onclick="selectTrack(0)" style="
-          padding:9px 16px; font-size:13px; color:#333; cursor:pointer;
-          display:flex; align-items:center; gap:8px; transition:background 0.12s;
-        " onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
+        <div onclick="selectTrack(0)" style="padding:9px 16px;font-size:13px;color:#333;cursor:pointer;display:flex;align-items:center;gap:8px;"
+          onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
           <span id="indicator-0" style="color:#111;font-size:11px;">▶</span> Dixon Song
         </div>
-        <div id="menu-item-1" onclick="selectTrack(1)" style="
-          padding:9px 16px; font-size:13px; color:#333; cursor:pointer;
-          display:flex; align-items:center; gap:8px; transition:background 0.12s;
-        " onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
+        <div onclick="selectTrack(1)" style="padding:9px 16px;font-size:13px;color:#333;cursor:pointer;display:flex;align-items:center;gap:8px;"
+          onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
           <span id="indicator-1" style="color:#111;font-size:11px;">▶</span> Crypto Star
         </div>
-        <div id="menu-item-2" onclick="selectTrack(2)" style="
-          padding:9px 16px; font-size:13px; color:#333; cursor:pointer;
-          display:flex; align-items:center; gap:8px; transition:background 0.12s;
-        " onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
+        <div onclick="selectTrack(2)" style="padding:9px 16px;font-size:13px;color:#333;cursor:pointer;display:flex;align-items:center;gap:8px;"
+          onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
           <span id="indicator-2" style="color:#111;font-size:11px;">▶</span> FHE
         </div>
       </div>
@@ -1175,12 +1166,11 @@ function copyPre(btn) {
 }
   
 const TRACKS = [
-  { file: 'DixonSong.mp3', label: 'Dixon Song' },
-  { file: 'CryptoStar.mp3', label: 'Crypto Star' }
-  { file: 'FHE.mp3',       label: 'FHE' },
+  { file: 'DixonSong.mp3',  label: 'Dixon Song' },
+  { file: 'CryptoStar.mp3', label: 'Crypto Star' },
+  { file: 'FHE.mp3',        label: 'FHE' },
 ];
 let currentTrack = 0;
-let musicUnlocked = false; // becomes true after first song ends
 
 function togglePlay() {
   const audio = document.getElementById('dixon-audio');
@@ -1193,11 +1183,9 @@ function togglePlay() {
     btn.textContent = '▶\u00A0Play';
   }
   audio.onended = () => {
-    musicUnlocked = true;
-    // Hide play button, show dropdown trigger
     document.getElementById('play-btn').style.display = 'none';
     document.getElementById('music-select-btn').style.display = '';
-    updateIndicators();
+    updateIndicators(true);
   };
 }
 
@@ -1208,12 +1196,18 @@ function toggleMusicMenu() {
 
 function selectTrack(idx) {
   const audio = document.getElementById('dixon-audio');
-  const btn   = document.getElementById('music-select-btn');
+  document.getElementById('music-menu').style.display = 'none';
+
+  if (idx === currentTrack) {
+    if (audio.paused) { audio.play(); } else { audio.pause(); }
+    updateIndicators();
+    return;
+  }
+
   currentTrack = idx;
   audio.src = TRACKS[idx].file;
   audio.play();
   updateIndicators();
-  document.getElementById('music-menu').style.display = 'none';
   audio.onended = () => { updateIndicators(true); };
 }
 
@@ -1221,6 +1215,7 @@ function updateIndicators(ended) {
   const audio = document.getElementById('dixon-audio');
   TRACKS.forEach((_, i) => {
     const el = document.getElementById('indicator-' + i);
+    if (!el) return;
     if (i === currentTrack) {
       el.textContent = (ended || audio.paused) ? '▶' : '⏸';
       el.style.color = '#0066cc';
@@ -1231,7 +1226,6 @@ function updateIndicators(ended) {
   });
 }
 
-// Close menu when clicking outside
 document.addEventListener('click', function(e) {
   const wrapper = document.getElementById('music-wrapper');
   if (wrapper && !wrapper.contains(e.target)) {
@@ -1239,7 +1233,7 @@ document.addEventListener('click', function(e) {
     if (menu) menu.style.display = 'none';
   }
 });
-  
+
 </script>
 </body>
 </html>
