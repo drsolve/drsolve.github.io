@@ -322,17 +322,17 @@ footer {
         " onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
           <span id="indicator-0" style="color:#111;font-size:11px;">▶</span> Dixon Song
         </div>
-        <div id="menu-item-1" onclick="selectTrack(1)" style="
+        <div id="menu-item-1" onclick="selectTrack(2)" style="
           padding:9px 16px; font-size:13px; color:#333; cursor:pointer;
           display:flex; align-items:center; gap:8px; transition:background 0.12s;
         " onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
-          <span id="indicator-1" style="color:#111;font-size:11px;">▶</span> FHE
+          <span id="indicator-1" style="color:#111;font-size:11px;">▶</span> Crypto Star
         </div>
-        <div id="menu-item-2" onclick="selectTrack(2)" style="
+        <div id="menu-item-2" onclick="selectTrack(1)" style="
           padding:9px 16px; font-size:13px; color:#333; cursor:pointer;
           display:flex; align-items:center; gap:8px; transition:background 0.12s;
         " onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='#fff'">
-          <span id="indicator-2" style="color:#111;font-size:11px;">▶</span> Crypto Star
+          <span id="indicator-2" style="color:#111;font-size:11px;">▶</span> FHE
         </div>
       </div>
     </div>
@@ -1176,8 +1176,8 @@ function copyPre(btn) {
   
 const TRACKS = [
   { file: 'DixonSong.mp3', label: 'Dixon Song' },
-  { file: 'FHE.mp3',       label: 'FHE' },
   { file: 'CryptoStar.mp3', label: 'Crypto Star' }
+  { file: 'FHE.mp3',       label: 'FHE' },
 ];
 let currentTrack = 0;
 let musicUnlocked = false; // becomes true after first song ends
