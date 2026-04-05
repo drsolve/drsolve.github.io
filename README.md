@@ -1,6 +1,6 @@
 ## Music Notes 🎵
 
-Congratulations on finding the Easter egg! You can listen to or download our AI-generated songs from the top-right corner:
+Congratulations on finding the Easter egg! You can listen to or download our songs from the top-right corner:
 
 - **Dixon Song** — [Download](https://github.com/DixonRes/DixonRes.github.io/raw/main/DixonSong.mp3)
 - **Crypto Star** — [Download](https://github.com/DixonRes/DixonRes.github.io/raw/main/CryptoStar.mp3)
