@@ -253,6 +253,17 @@ tr:nth-child(even) td { background: #fafafa; }
 }
 .btn-outline:hover { background: #f5f5f5; }
 
+/* ── MUSIC BUTTON HOVER REVEAL ── */
+#music-wrapper #play-btn,
+#music-wrapper #music-select-btn {
+  opacity: 0;
+  transition: opacity 0.2s, background 0.15s;
+}
+#music-wrapper:hover #play-btn,
+#music-wrapper:hover #music-select-btn {
+  opacity: 1;
+}
+
 /* ── FOOTER ── */
 footer {
   border-top: 1px solid #e5e5e5;
