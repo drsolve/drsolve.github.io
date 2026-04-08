@@ -3,8 +3,8 @@
 Congratulations on finding the Easter egg! You can listen to or download our songs:
 
 - **Dixon Song** — [Download](https://github.com/DixonRes/DixonRes.github.io/raw/main/DixonSong.mp3)
-- **Prove Dream** — [Download](https://github.com/DixonRes/DixonRes.github.io/raw/main/ProveDream.mp3)
 - **Crypto Star** — [Download](https://github.com/DixonRes/DixonRes.github.io/raw/main/CryptoStar.mp3)
+- **Prove Dream** — [Download](https://github.com/DixonRes/DixonRes.github.io/raw/main/ProveDream.mp3)
 - **FHE** — [Download](https://github.com/DixonRes/DixonRes.github.io/raw/main/FHE.mp3)
 - **One-Way Hash**  — [Download](https://github.com/DixonRes/DixonRes.github.io/raw/main/One-WayHash.mp3)
 
