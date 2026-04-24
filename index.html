@@ -657,11 +657,11 @@ Report saved to   : comp_20260319_192716.dat
     <h3>Dixon mode / Complexity mode — file format</h3>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
-      <pre><span class="num">257</span>            <span class="cmt"># line 1: field size</span>
-x+y+z          <span class="cmt"># line 2+: polynomials (one per line or comma-separated)</span>
+      <pre><span class="num">x,y</span>            <span class="cmt"># line 1: variables to eliminate</span>
+257          <span class="cmt"># line 2: field size</span>
 x*y+y*z+z*x
 x*y*z+1
-x,y            <span class="cmt"># last line: variables to eliminate</span></pre>
+x+y+z            <span class="cmt"># last 3+: polynomials (one per line or comma-separated)</span></pre>
     </div>
     <h3>Solver mode — file format</h3>
     <div class="code-block">
