@@ -373,10 +373,10 @@ footer {
   </span>
   <span style="width:1px;height:30px;background:#ddd;display:inline-block;margin:0 2px;"></span>
 
-  <a class="btn" href="https://github.com/DixonRes/DixonRes/archive/refs/tags/v0.1.5.tar.gz" style="background:#333;color:#fff;border:1px solid #333;">Source Code</a>
-  <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.5/dixon-0.1.5-linux-x86_64.zip">Linux Binary</a>
-  <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.5/dixon-0.1.5-macos15.7-arm64.zip">macOS Binary</a>
-  <a class="btn btn-outline" href="https://github.com/DixonRes/DixonRes/releases/download/v0.1.5/dixon-0.1.5-windows-x86_64.zip">Windows GUI</a>
+  <a class="btn" href="https://github.com/drsolve/drsolve/archive/refs/tags/v0.1.5.tar.gz" style="background:#333;color:#fff;border:1px solid #333;">Source Code</a>
+  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.1.5/dixon-0.1.5-linux-x86_64.zip">Linux Binary</a>
+  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.1.5/dixon-0.1.5-macos15.7-arm64.zip">macOS Binary</a>
+  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.1.5/dixon-0.1.5-windows-x86_64.zip">Windows GUI</a>
     </div>
 </div>
 
@@ -406,7 +406,7 @@ footer {
   <hr>
 
   <h2>License</h2>
-  <p>DixonRes is free software distributed under the <strong>GNU General Public License, version 2.0 or later (GPLv2+)</strong>.</p>
+  <p>DRsolve is free software distributed under the <strong>GNU General Public License, version 2.0 or later (GPLv2+)</strong>.</p>
 </div>
 
 <!-- ══ USAGE ══ -->
@@ -694,7 +694,7 @@ a3                   <span class="cmt"># last line: variables to eliminate</span
 <!-- ══ FIELDS ══ -->
 <div id="page-fields" class="page">
   <h1>Field Support</h1>
-  <p class="subtitle">DixonRes currently supports prime fields, extension fields, and ℚ. Arithmetic uses FLINT throughout, with optional PML acceleration for suitable prime-field computations.</p>
+  <p class="subtitle">DRsolve currently supports prime fields, extension fields, and ℚ. Arithmetic uses FLINT throughout, with optional PML acceleration for suitable prime-field computations.</p>
 
   <h2>Prime fields — F<sub>p</sub></h2>
   <p>Specify a prime field as a plain integer such as <code>257</code>. For primes within the standard <code>nmod</code> backend, all finite-field modes are available.</p>
@@ -726,7 +726,7 @@ a3                   <span class="cmt"># last line: variables to eliminate</span
   <hr>
 
   <h2>Rational field — ℚ</h2>
-  <p>Use <code>field_size=0</code> to work over the rationals. DixonRes reconstructs exact rational results from modular images.</p>
+  <p>Use <code>field_size=0</code> to work over the rationals. DRsolve reconstructs exact rational results from modular images.</p>
   <div class="code-block">
     <button class="copy-btn" onclick="copyPre(this)">copy</button>
     <pre>./drsolve <span class="str">"x^2+y^2+z^2-1, x^2+y^2-2*z^2, x+y+z"</span> <span class="str">"x,y"</span> <span class="num">0</span>
@@ -750,14 +750,14 @@ a3                   <span class="cmt"># last line: variables to eliminate</span
 <div id="page-sage" class="page">
   <h1>SageMath Interface</h1>
   <p class="subtitle">
-    <code>dixon_sage_interface.sage</code> is a thin wrapper that lets you call DixonRes
+    <code>dixon_sage_interface.sage</code> is a thin wrapper that lets you call DRsolve
     directly from a SageMath session. Polynomials are passed as native Sage objects;
     the interface handles serialisation, subprocess invocation, and output parsing automatically.
   </p>
 
   <div class="info-box">
-    The interface file <code>dixon_sage_interface.sage</code> is included in the DixonRes repository.
-    The DixonRes binary must be built and accessible before use.
+    The interface file <code>dixon_sage_interface.sage</code> is included in the DRsolve repository.
+    The DRsolve binary must be built and accessible before use.
   </div>
 
   <h2>Setup</h2>
@@ -840,19 +840,19 @@ res3 = DixonResultant([res2, z-<span class="num">2</span>], [z])
 <!-- ══ INSTALL ══ -->
 <div id="page-install" class="page">
   <h1>Installation</h1>
-  <p class="subtitle">DixonRes requires FLINT 3.4.0 or later. PML is optional but recommended for prime field performance.</p>
+  <p class="subtitle">DRsolve requires FLINT 3.4.0 or later. PML is optional but recommended for prime field performance.</p>
 
   <h2>1. Install FLINT</h2>
   <p>Get FLINT 3.4.0 or newer from <a href="https://github.com/flintlib/flint" target="_blank">github.com/flintlib/flint</a> and follow its build instructions for your platform.</p>
 
   <h2>2. Install PML (optional)</h2>
-  <p>Get PML from <a href="https://github.com/vneiger/pml" target="_blank">github.com/vneiger/pml</a>. If present, DixonRes will detect and use it automatically at configure time for prime field systems.</p>
+  <p>Get PML from <a href="https://github.com/vneiger/pml" target="_blank">github.com/vneiger/pml</a>. If present, DRsolve will detect and use it automatically at configure time for prime field systems.</p>
 
   <h2>3. Clone and build</h2>
   <div class="code-block">
     <button class="copy-btn" onclick="copyPre(this)">copy</button>
-    <pre>git clone https://github.com/DixonRes/DixonRes
-cd DixonRes
+    <pre>git clone https://github.com/drsolve/drsolve
+cd drsolve
 ./configure
 make
 make check     <span class="cmt"># optional</span>
@@ -896,7 +896,7 @@ make help</pre>
 <!-- ══ DOWNLOADS ══ -->
 <div id="page-downloads" class="page">
   <h1>Downloads</h1>
-  <p class="subtitle">Pre-built source archives for each <a href="https://github.com/DixonRes/DixonRes/releases" target="_blank" rel="noopener noreferrer">release</a>. 
+  <p class="subtitle">Pre-built source archives for each <a href="https://github.com/drsolve/drsolve/releases" target="_blank" rel="noopener noreferrer">release</a>. 
     Build instructions are on the <a href="#" onclick="showPage('install');return false;">Install</a> page.</p>
   <!-- v0.1.5 -->
   <div style="border:1px solid #ddd;border-radius:6px;padding:24px;margin-bottom:20px;">
@@ -1101,7 +1101,7 @@ make help</pre>
 </div>
 
 <footer>
-  <span>DixonRes · <a href="https://github.com/DixonRes/DixonRes" target="_blank">github.com/DixonRes/DixonRes</a></span>
+  <span>DRsolve · <a href="https://github.com/drsolve/drsolve" target="_blank">github.com/drsolve/drsolve</a></span>
   <span>GNU General Public License v2.0 or later (GPLv2+)</span>
 </footer>
 
@@ -1142,7 +1142,7 @@ const TRACKS = [
 ];
 let currentTrack = 0;
 
-const UNLOCK_KEY = 'dixonres_music_unlocked';
+const UNLOCK_KEY = 'drsolve_music_unlocked';
 
 function isUnlocked() {
   return localStorage.getItem(UNLOCK_KEY) === '1';
