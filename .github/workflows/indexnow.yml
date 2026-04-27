@@ -1,0 +1,17 @@
+name: IndexNow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-and-submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: IndexNow Action
+        uses: focalpoint/indexnow-action@v2
+        with:
+          sitemap-url: 'https://drsolve.github.io/sitemap.xml'
+          server: 'www.bing.com'
+          key: ${{ secrets.INDEXNOW_KEY }}
