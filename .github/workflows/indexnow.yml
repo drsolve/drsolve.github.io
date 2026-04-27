@@ -6,12 +6,9 @@ on:
       - main
 
 jobs:
-  check-and-submit:
+  indexnow:
     runs-on: ubuntu-latest
     steps:
-      - name: IndexNow Action
-        uses: focalpoint/indexnow-action@v2
-        with:
-          sitemap-url: 'https://drsolve.github.io/sitemap.xml'
-          server: 'www.bing.com'
-          key: ${{ secrets.INDEXNOW_KEY }}
+      - name: Send IndexNow Request
+        run: |
+          curl -v "https://www.bing.com/indexnow?url=https://drsolve.github.io/&key=${{ secrets.INDEXNOW_KEY }}"
