@@ -414,9 +414,10 @@ footer {
   <h1>Usage</h1>
   <p class="subtitle">
     All modes use the same binary <code>./drsolve</code>. Command-line runs write
-    timestamped <code>solution_YYYYMMDD_HHMMSS.dat</code> or
-    <code>comp_YYYYMMDD_HHMMSS.dat</code>; file input writes
-    <code>example_solution.dat</code> or <code>example_comp.dat</code>.
+    timestamped <code>solution_YYYYMMDD_HHMMSS.dr</code> or
+    <code>comp_YYYYMMDD_HHMMSS.dr</code> by default; file input writes
+    <code>example_solution.dr</code> or <code>example_comp.dr</code>.
+    Use <code>-o output.dr</code> to override the output filename.
   </p>
 
   <div class="sub-tabs">
@@ -437,7 +438,8 @@ footer {
     <p><strong>Syntax</strong></p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
-      <pre>./drsolve <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size</pre>
+      <pre>./drsolve <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size
+./drsolve -o output.dr <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size</pre>
     </div>
     <div class="note-box">
       <code>field_size</code> may be a prime such as <code>257</code>, an extension field such as <code>2^8</code>,
@@ -449,7 +451,7 @@ footer {
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./drsolve <span class="str">"x+y+z, x*y+y*z+z*x, x*y*z+1"</span> <span class="str">"x,y"</span> <span class="num">257</span></pre>
     </div>
-    <p>Output: the resultant polynomial in <code>z</code>, written to a solution <code>.dat</code> file. This is also the mode used for very large prime fields beyond the <code>nmod</code> limit.</p>
+    <p>Output: the resultant polynomial in <code>z</code>, written to a solution <code>.dr</code> file. This is also the mode used for very large prime fields beyond the <code>nmod</code> limit.</p>
   </div>
 
   <!-- Solver -->
@@ -459,25 +461,26 @@ footer {
     <p><strong>Syntax</strong></p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
-      <pre>./drsolve --solve <span class="str">"polynomials"</span> field_size
-./drsolve --solve-verbose <span class="str">"polynomials"</span> field_size</pre>
+      <pre>./drsolve <span class="str">"polynomials"</span> field_size
+./drsolve -s <span class="str">"polynomials"</span> field_size
+./drsolve -v <span class="num">2</span> -s <span class="str">"polynomials"</span> field_size</pre>
     </div>
     <p><strong>Example</strong></p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
-      <pre>./drsolve --solve <span class="str">"x^2 + y^2 + z^2 - 6, x + y + z - 4, x*y*z - x - 1"</span> <span class="num">257</span></pre>
+      <pre>./drsolve -s <span class="str">"x^2 + y^2 + z^2 - 6, x + y + z - 4, x*y*z - x - 1"</span> <span class="num">257</span></pre>
     </div>
     <div class="info-box">
-      <code>--solve</code> prints a concise summary with candidate sets and verified solutions.
-      <code>--solve-verbose</code> keeps the full elimination and back-substitution log.
-      Variables are auto-detected from the input expressions.
+      <code>-s</code> is the short form of solver mode, while plain <code>./drsolve "polynomials" field_size</code>
+      also auto-enters solver mode. <code>-v 0</code> is silent, <code>-v 1</code> is the default output level,
+      and <code>-v 2</code> keeps the full elimination/debug log. Variables are auto-detected from the input expressions.
     </div>
-    <p>Use <code>--silent</code> to suppress console output while still writing the solution file:</p>
+    <p>Use <code>-v 0</code> to suppress console output while still writing the solution file:</p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
-      <pre>./drsolve --silent --solve <span class="str">"..."</span> <span class="num">257</span></pre>
+      <pre>./drsolve -v <span class="num">0</span> -s <span class="str">"..."</span> <span class="num">257</span></pre>
     </div>
-    <div class="note-box">Currently unavailable for <code>field_size=0</code> and for very large prime fallback fields beyond the <code>nmod</code> limit.</div>
+    <div class="note-box"><code>--solve</code>, <code>--solve-verbose</code>, and <code>--silent</code> are still accepted for compatibility. For <code>field_size=0</code>, you can also use <code>--solve-rational-only</code> to keep only exact rational solutions.</div>
   </div>
 
   <!-- Complexity -->
@@ -520,7 +523,7 @@ Bezout bound      : 8
 Dixon matrix size : 5
 Resultant deg est : 8  (Bezout bound)
 Complexity (log2) : 7.9254  (omega=2.3)
-Report saved to   : comp_20260319_192716.dat
+Report saved to   : comp_20260319_192716.dr
 ===========================</pre>
     </div>
 
@@ -539,15 +542,15 @@ Report saved to   : comp_20260319_192716.dat
     </div>
     <div class="info-box">
       Flags may appear in any order before the positional arguments.
-      <code>--silent</code>, <code>--comp</code>, and <code>--omega</code> can be combined freely.
+      <code>-v</code>, <code>--comp</code>, <code>--omega</code>, and <code>-o</code> can be combined freely.
     </div>
     <div class="note-box">Supported over prime fields within the standard backend, extension fields, and ℚ. It is not available in the current large-prime fallback mode.</div>
 
     <h3>Output file</h3>
     <table>
       <tr><th>Input method</th><th>Output file</th></tr>
-      <tr><td>Command-line arguments</td><td><code>comp_YYYYMMDD_HHMMSS.dat</code></td></tr>
-      <tr><td>File input <code>example.dat</code></td><td><code>example_comp.dat</code></td></tr>
+      <tr><td>Command-line arguments</td><td><code>comp_YYYYMMDD_HHMMSS.dr</code></td></tr>
+      <tr><td>File input <code>example.dr</code></td><td><code>example_comp.dr</code></td></tr>
     </table>
     <p>The report file contains all of the above fields plus the omega value used.</p>
   </div>
@@ -580,7 +583,7 @@ Report saved to   : comp_20260319_192716.dat
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./drsolve --random <span class="str">"[d1,d2,...,dn]"</span> field_size
 ./drsolve -r       <span class="str">"[d]*n"</span>          field_size
-./drsolve -r --solve <span class="str">"[d1,...,dn]"</span> field_size
+./drsolve -r -s    <span class="str">"[d1,...,dn]"</span> field_size
 ./drsolve -r --comp  <span class="str">"[d]*n"</span>        field_size</pre>
     </div>
     <p><strong>Examples</strong></p>
@@ -588,11 +591,11 @@ Report saved to   : comp_20260319_192716.dat
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./drsolve --random <span class="str">"[3,3,2]"</span> <span class="num">257</span>
 ./drsolve -r <span class="str">"[3]*3"</span> <span class="num">0</span>
-./drsolve -r --solve <span class="str">"[2]*3"</span> <span class="num">257</span>
+./drsolve -r -s <span class="str">"[2]*3"</span> <span class="num">257</span>
 ./drsolve -r --comp --omega <span class="num">2.373</span> <span class="str">"[4]*4"</span> <span class="num">257</span></pre>
     </div>
     <div class="info-box">Random systems use auto-generated variable names such as <code>x0</code>, <code>x1</code>, … and write the same solution/complexity files as manual input.</div>
-    <div class="note-box">Random mode is not available in the current large-prime fallback mode. Over ℚ, it can be combined with basic Dixon and <code>--comp</code>, but not with <code>--solve</code>.</div>
+    <div class="note-box">Random mode is not available in the current large-prime fallback mode.</div>
   </div>
 
   <!-- Extension fields -->
@@ -607,7 +610,7 @@ Report saved to   : comp_20260319_192716.dat
     <p><strong>Custom polynomial</strong> (e.g., the AES field polynomial for GF(2<sup>8</sup>)):</p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
-      <pre>./drsolve --solve <span class="str">"x^2 + t*y, x*y + t^2"</span> <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span></pre>
+      <pre>./drsolve -s <span class="str">"x^2 + t*y, x*y + t^2"</span> <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span></pre>
     </div>
     <table>
       <tr><th>Field</th><th>Argument</th></tr>
@@ -626,7 +629,8 @@ Report saved to   : comp_20260319_192716.dat
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>./drsolve --ideal <span class="str">"ideal_generators"</span> <span class="str">"polynomials"</span> <span class="str">"eliminate_vars"</span> field_size
-./drsolve --ideal input_file</pre>
+./drsolve --ideal -f input.dr
+./drsolve --ideal -f input.dr -o output.dr</pre>
     </div>
     <p><strong>Example</strong></p>
     <div class="code-block">
@@ -645,14 +649,15 @@ Report saved to   : comp_20260319_192716.dat
   <!-- File input -->
   <div id="sub-file" class="sub-page">
     <h2>File Input</h2>
-    <p>Pass a <code>.dat</code> file instead of inline arguments for scripted or batch use.</p>
+    <p>Pass a <code>.dr</code> file instead of inline arguments for scripted or batch use. The input file may be given directly or with <code>-f</code>; use <code>-o</code> to choose the output file.</p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
-      <pre>./drsolve example.dat
-./drsolve --solve  system.dat
-./drsolve --comp   system.dat
-./drsolve --ideal  ideal.dat
-./drsolve --field-equation system.dat</pre>
+      <pre>./drsolve example.dr
+./drsolve -f example.dr
+./drsolve -s -f system.dr -o output.dr
+./drsolve --comp -f system.dr
+./drsolve --ideal -f ideal.dr
+./drsolve --field-equation -f system.dr</pre>
     </div>
     <h3>Dixon mode / Complexity mode — file format</h3>
     <div class="code-block">
@@ -683,11 +688,11 @@ a3                   <span class="cmt"># last line: variables to eliminate</span
     </div>
     <h3>Output filenames</h3>
     <table>
-      <tr><th>Mode</th><th>Command-line input</th><th>File input <code>example.dat</code></th></tr>
-      <tr><td>Dixon / Solver</td><td><code>solution_YYYYMMDD_HHMMSS.dat</code></td><td><code>example_solution.dat</code></td></tr>
-      <tr><td>Complexity</td><td><code>comp_YYYYMMDD_HHMMSS.dat</code></td><td><code>example_comp.dat</code></td></tr>
+      <tr><th>Mode</th><th>Command-line input</th><th>File input <code>example.dr</code></th></tr>
+      <tr><td>Dixon / Solver</td><td><code>solution_YYYYMMDD_HHMMSS.dr</code></td><td><code>example_solution.dr</code></td></tr>
+      <tr><td>Complexity</td><td><code>comp_YYYYMMDD_HHMMSS.dr</code></td><td><code>example_comp.dr</code></td></tr>
     </table>
-    <p><code>--ideal</code> and <code>--field-equation</code> also use the solution filename pattern.</p>
+    <p><code>--ideal</code> and <code>--field-equation</code> also use the solution filename pattern. If <code>-o</code> is given, that filename is used instead.</p>
   </div>
 </div>
 
@@ -700,13 +705,13 @@ a3                   <span class="cmt"># last line: variables to eliminate</span
   <p>Specify a prime field as a plain integer such as <code>257</code>. For primes within the standard <code>nmod</code> backend, all finite-field modes are available.</p>
   <div class="code-block">
     <button class="copy-btn" onclick="copyPre(this)">copy</button>
-    <pre>./drsolve --solve <span class="str">"..."</span> <span class="num">257</span>
-./drsolve --solve <span class="str">"..."</span> <span class="num">65537</span>
-./drsolve --solve <span class="str">"..."</span> <span class="num">4294967311</span></pre>
+    <pre>./drsolve -s <span class="str">"..."</span> <span class="num">257</span>
+./drsolve -s <span class="str">"..."</span> <span class="num">65537</span>
+./drsolve -s <span class="str">"..."</span> <span class="num">4294967311</span></pre>
   </div>
   <p>When the optional <a href="https://github.com/vneiger/pml" target="_blank">PML library</a> is installed and detected at configure time, polynomial matrix operations are automatically accelerated for well-determined prime field systems.</p>
   <div class="info-box">For very large primes beyond the <code>nmod</code> limit, the current release still computes Dixon resultants by reconstructing over ℚ and then reducing modulo the target prime.</div>
-  <div class="note-box">That large-prime fallback is currently limited to the basic Dixon resultant mode. <code>--solve</code>, <code>--comp</code>, <code>--random</code>, <code>--ideal</code>, and <code>--field-equation</code> are not available there yet.</div>
+  <div class="note-box">For very large primes beyond the <code>nmod</code> limit, solver mode is available, but <code>--comp</code>, <code>--random</code>, <code>--ideal</code>, and <code>--field-equation</code> are not available yet.</div>
 
   <hr>
 
@@ -718,7 +723,7 @@ a3                   <span class="cmt"># last line: variables to eliminate</span
 ./drsolve <span class="str">"..."</span> <span class="str">"x"</span> <span class="num">2^8</span>
 
 <span class="cmt"># Custom polynomial</span>
-./drsolve --solve <span class="str">"x^2+t*y, x*y+t^2"</span> <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span></pre>
+./drsolve -s <span class="str">"x^2+t*y, x*y+t^2"</span> <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span></pre>
   </div>
   <div class="info-box">Extension fields are slower than prime fields because arithmetic is carried out modulo an irreducible polynomial. PML acceleration does not apply here.</div>
   <div class="note-box">Extension fields whose characteristic exceeds the <code>nmod</code> limit are not supported in the current release.</div>
@@ -730,9 +735,10 @@ a3                   <span class="cmt"># last line: variables to eliminate</span
   <div class="code-block">
     <button class="copy-btn" onclick="copyPre(this)">copy</button>
     <pre>./drsolve <span class="str">"x^2+y^2+z^2-1, x^2+y^2-2*z^2, x+y+z"</span> <span class="str">"x,y"</span> <span class="num">0</span>
-./drsolve --comp <span class="str">"x^3+y^3+z^3, x^2*y+y^2*z+z^2*x, x+y+z-1"</span> <span class="str">"x,y"</span> <span class="num">0</span></pre>
+./drsolve --comp <span class="str">"x^3+y^3+z^3, x^2*y+y^2*z+z^2*x, x+y+z-1"</span> <span class="str">"x,y"</span> <span class="num">0</span>
+./drsolve -s <span class="str">"x^2+y^2-5, x-y-1"</span> <span class="num">0</span></pre>
   </div>
-  <div class="note-box">In the current release, ℚ supports the basic Dixon resultant and <code>--comp</code> only. <code>--solve</code>, <code>--ideal</code>, and <code>--field-equation</code> are not implemented over ℚ yet.</div>
+  <div class="note-box">Over the rationals, the basic Dixon resultant, <code>--comp</code>, and solver mode are supported. <code>--ideal</code> and <code>--field-equation</code> are not implemented there yet.</div>
 
   <h3>Common examples</h3>
   <table>
@@ -742,7 +748,7 @@ a3                   <span class="cmt"># last line: variables to eliminate</span
     <tr><td>GF(2<sup>8</sup>)</td><td><code>2^8</code></td><td>FLINT default irreducible polynomial</td></tr>
     <tr><td>GF(2<sup>8</sup>) with AES polynomial</td><td><code>"2^8: t^8+t^4+t^3+t+1"</code></td><td>Custom polynomial supported</td></tr>
     <tr><td>GF(3<sup>5</sup>)</td><td><code>3^5</code></td><td>Extension field with FLINT default polynomial</td></tr>
-    <tr><td>ℚ</td><td><code>0</code></td><td>Basic Dixon resultant and <code>--comp</code></td></tr>
+    <tr><td>Q</td><td><code>0</code></td><td>Basic Dixon resultant, <code>--comp</code>, and solver mode</td></tr>
   </table>
 </div>
 
@@ -869,7 +875,7 @@ make help</pre>
   <p>Run a quick test to confirm the build is working:</p>
   <div class="code-block">
     <button class="copy-btn" onclick="copyPre(this)">copy</button>
-    <pre>./drsolve --solve <span class="str">"x + y - 3, x*y - 2"</span> <span class="num">257</span></pre>
+    <pre>./drsolve -s <span class="str">"x + y - 3, x*y - 2"</span> <span class="num">257</span></pre>
   </div>
   <p>Expected: solutions <code>[x=1, y=2]</code> and <code>[x=2, y=1]</code> over GF(257).</p>
 
