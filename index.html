@@ -446,6 +446,10 @@ footer {
       a custom extension field such as <code>"2^8: t^8+t^4+t^3+t+1"</code>, or <code>0</code> for ℚ.
       The number of eliminated variables must equal the number of equations minus one.
     </div>
+    <div class="info-box">
+      Direct resultant selectors <code>--dixon</code>, <code>--macaulay</code>, and <code>--subres</code> are available.
+      For convenience, 2 equations with 1 elimination variable auto-enable <code>--subres</code>, while standard 3/4-equation Dixon cases auto-enable the fast recursive Dixon construction unless a method is selected explicitly.
+    </div>
     <p><strong>Example</strong> — eliminate x and y from a 3-polynomial system over GF(257):</p>
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
@@ -473,7 +477,7 @@ footer {
     <div class="info-box">
       <code>-s</code> is the short form of solver mode, while plain <code>./drsolve "polynomials" field_size</code>
       also auto-enters solver mode. <code>-v 0</code> is silent, <code>-v 1</code> is the default output level,
-      and <code>-v 2</code> keeps the full elimination/debug log. Variables are auto-detected from the input expressions.
+      <code>-v 2</code> keeps the full elimination/debug log, and <code>-v 3</code> also dumps small intermediate matrices. Variables are auto-detected from the input expressions.
     </div>
     <p>Use <code>-v 0</code> to suppress console output while still writing the solution file:</p>
     <div class="code-block">
@@ -496,7 +500,7 @@ footer {
       <li>Bezout bound (product of degrees)</li>
       <li>Dixon matrix size via the Hessenberg recurrence</li>
       <li>Resultant degree estimate</li>
-      <li>Complexity in log₂ bits: <code>log₂(d · S<sup>ω</sup>)</code>, where S is the matrix size and ω is the matrix-multiplication exponent</li>
+      <li>Step 1/2 and Step 4 complexity estimates for direct, HNF/interpolation, sparse, and recursive Dixon construction models</li>
     </ul>
 
     <p><strong>Syntax</strong></p>
@@ -516,14 +520,19 @@ footer {
     <div class="code-block">
       <button class="copy-btn" onclick="copyPre(this)">copy</button>
       <pre>=== Complexity Analysis ===
-Equations: 3  |  Variables: 3  |  Eliminate: 2
-All vars : x, y, z
-Degrees  : [2, 2, 2]
-Bezout bound      : 8
-Dixon matrix size : 5
-Resultant deg est : 8  (Bezout bound)
-Complexity (log2) : 7.9254  (omega=2.3)
-Report saved to   : comp_20260319_192716.dr
+--- Step 1/2 ---
+Step 1/2 direct multivariate cofactor expansion (naive, log2): ...
+Step 1/2 Kronecker + HNF (log2): ...
+Step 1/2 recursive block Dixon construction (Zhao/Qin surrogate, log2): ...
+Best Step 1/2 estimate: ...
+
+--- Step 4 ---
+Step 4 HNF (log2, omega=2.81): ...
+Step 4 ordinary dense interpolation (log2): ...
+Best Step 4 estimate: ...
+
+--- Overall ---
+Overall complexity = max(step1/2, step4) (log2): ...
 ===========================</pre>
     </div>
 
@@ -543,6 +552,9 @@ Report saved to   : comp_20260319_192716.dr
     <div class="info-box">
       Flags may appear in any order before the positional arguments.
       <code>-v</code>, <code>--comp</code>, <code>--omega</code>, and <code>-o</code> can be combined freely.
+    </div>
+    <div class="info-box">
+      Under <code>--comp</code>, <code>-v 0</code> prints only the final overall complexity, <code>-v 1</code> prints the per-step / per-method summary, <code>-v 2</code> adds formulas and parameter values, and <code>-v 3</code> adds extra detail.
     </div>
     <div class="note-box">Supported over prime fields within the standard backend, extension fields, and ℚ. It is not available in the current large-prime fallback mode.</div>
 
