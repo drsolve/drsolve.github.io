@@ -369,14 +369,14 @@ footer {
   </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:-5px;">
   <span style="background:#eee;color:#111;border:1px solid #d1d5db;padding:10px 10px;border-radius:6px;font-weight:bold;font-size:14px;margin-right:4px;">
-    <a href="#" onclick="showPage('downloads');return false;" style="text-decoration:none; color:inherit; display:inline-block;">Download v0.2.3</a>
+    <a href="#" onclick="showPage('downloads');return false;" style="text-decoration:none; color:inherit; display:inline-block;">Download v0.2.4</a>
   </span>
   <span style="width:1px;height:30px;background:#ddd;display:inline-block;margin:0 2px;"></span>
 
-  <a class="btn" href="https://github.com/drsolve/drsolve/archive/refs/tags/v0.2.3.tar.gz" style="background:#333;color:#fff;border:1px solid #333;">Source Code</a>
-  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.2.3/drsolve-0.2.3-linux-x86_64.zip">Linux Binary</a>
-  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.2.3/drsolve-0.2.3-macos15.7-arm64.zip">macOS Binary</a>
-  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.2.3/drsolve-0.2.3-windows-x86_64.zip">Windows GUI</a>
+  <a class="btn" href="https://github.com/drsolve/drsolve/archive/refs/tags/v0.2.4.tar.gz" style="background:#333;color:#fff;border:1px solid #333;">Source Code</a>
+  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.2.4/drsolve-0.2.4-linux-x86_64.zip">Linux Binary</a>
+  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.2.4/drsolve-0.2.4-macos15.7-arm64.zip">macOS Binary</a>
+  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.2.4/drsolve-0.2.4-windows-x86_64.zip">Windows GUI</a>
     </div>
 </div>
 
@@ -910,12 +910,31 @@ make help</pre>
     </tr>
   </table>
 </div>
-
 <!-- ══ DOWNLOADS ══ -->
 <div id="page-downloads" class="page">
   <h1>Downloads</h1>
   <p class="subtitle">Pre-built source archives for each <a href="https://github.com/drsolve/drsolve/releases" target="_blank" rel="noopener noreferrer">release</a>. 
     Build instructions are on the <a href="#" onclick="showPage('install');return false;">Install</a> page.</p>
+  <!-- v0.2.4 -->
+  <div style="border:1px solid #ddd;border-radius:6px;padding:24px;margin-bottom:20px;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:4px;flex-wrap:wrap;">
+      <h2 style="margin:0;">v0.2.4</h2>
+      <span style="font-size:13px;color:#888;font-family:monospace;">2026-05-10</span>
+    </div>
+    <ul style="list-style:none;font-size:14px;color:#333;margin-bottom:20px;display:flex;flex-direction:column;gap:6px;">
+      <li>- Add complexity estimate of the recursive construct method from <a href="https://www.tandfonline.com/doi/full/10.1080/00207160.2016.1276572">X Qin et al.</a></li>
+      <li>- Integrate the recursive construct method from <a href="https://link.springer.com/article/10.1360/04ys0166">Zhao & Fu</a>, significantly accelerating Dixon matrix construction for high-degree, low-variable systems.</li>
+      <li>- Simplify the default help message, moving detailed help content to `-h` or `--help`.</li>
+      <li>- Improve output handling and fix various bugs.</li>
+    </ul>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a class="btn" href="https://github.com/drsolve/drsolve/archive/refs/tags/v0.2.4.tar.gz"> Source code (.tar.gz)</a>
+      <a class="btn" href="https://github.com/drsolve/drsolve/archive/refs/tags/v0.2.4.zip"> Source code (.zip)</a>
+      <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.2.4/drsolve-0.2.4-linux-x86_64.zip"> Binary (.zip, Linux x86_64)</a>
+      <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.2.4/drsolve-0.2.4-macos15.7-arm64.zip"> Binary (.zip, MacOS arm64)</a>
+      <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.2.4/drsolve-0.2.4-windows-x86_64.zip"> Binary (.zip, Windows x86_64)</a>
+    </div>
+  </div>
   <!-- v0.2.3 -->
   <div style="border:1px solid #ddd;border-radius:6px;padding:24px;margin-bottom:20px;">
     <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:4px;flex-wrap:wrap;">
