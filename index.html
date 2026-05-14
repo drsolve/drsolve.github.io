@@ -293,7 +293,6 @@ footer {
   <ul class="nav-tabs">
     <li><button class="active" onclick="showPage('home')">Overview</button></li>
     <li><button onclick="showPage('usage')">Usage</button></li>
-    <li><button onclick="showPage('fields')">Fields</button></li>
     <li><button onclick="showPage('sage')">SageMath</button></li>
     <li><button onclick="showPage('install')">Install</button></li>
     <li><button onclick="showPage('downloads')">Downloads</button></li>
@@ -424,6 +423,7 @@ footer {
     <button class="active" onclick="showSub(this,'basic')">Basic Resultant</button>
     <button onclick="showSub(this,'solve')">System Solver</button>
     <button onclick="showSub(this,'comp')">Complexity</button>
+    <button onclick="showSub(this,'fields')">Fields</button>
     <button onclick="showSub(this,'fieldeq')">Field Equation</button>
     <button onclick="showSub(this,'random')">Random Mode</button>
     <button onclick="showSub(this,'ext')">Extension Fields</button>
@@ -567,6 +567,58 @@ Overall complexity = max(step1/2, step4) (log2): ...
     <p>The report file contains all of the above fields plus the omega value used.</p>
   </div>
 
+  <!-- Fields -->
+  <div id="sub-fields" class="sub-page">
+    <h2>Field Support</h2>
+    <p>DRsolve currently supports prime fields, extension fields, and ℚ. Arithmetic uses FLINT throughout, with optional PML acceleration for suitable prime-field computations.</p>
+
+    <h3>Prime fields — F<sub>p</sub></h3>
+    <p>Specify a prime field as a plain integer such as <code>257</code>. For primes within the standard <code>nmod</code> backend, all finite-field modes are available.</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./drsolve -s <span class="str">"..."</span> <span class="num">257</span>
+./drsolve -s <span class="str">"..."</span> <span class="num">65537</span>
+./drsolve -s <span class="str">"..."</span> <span class="num">4294967311</span></pre>
+    </div>
+    <p>When the optional <a href="https://github.com/vneiger/pml" target="_blank">PML library</a> is installed and detected at configure time, polynomial matrix operations are automatically accelerated for well-determined prime field systems.</p>
+    <div class="info-box">For very large primes beyond the <code>nmod</code> limit, the current release still computes Dixon resultants by reconstructing over ℚ and then reducing modulo the target prime.</div>
+    <div class="note-box">For very large primes beyond the <code>nmod</code> limit, solver mode is available, but <code>--comp</code>, <code>--random</code>, <code>--ideal</code>, and <code>--field-equation</code> are not available yet.</div>
+
+    <h3>Extension fields — F<sub>p<sup>k</sup></sub></h3>
+    <p>Specify an extension field as <code>p^k</code>. The generator is <code>t</code> by default, and FLINT's built-in irreducible polynomial is used unless a custom one is provided.</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre><span class="cmt"># FLINT default polynomial</span>
+./drsolve <span class="str">"..."</span> <span class="str">"x"</span> <span class="num">2^8</span>
+
+<span class="cmt"># Custom polynomial</span>
+./drsolve -s <span class="str">"x^2+t*y, x*y+t^2"</span> <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span></pre>
+    </div>
+    <div class="info-box">Extension fields are slower than prime fields because arithmetic is carried out modulo an irreducible polynomial. PML acceleration does not apply here.</div>
+    <div class="note-box">Extension fields whose characteristic exceeds the <code>nmod</code> limit are not supported in the current release.</div>
+
+    <h3>Rational field — ℚ</h3>
+    <p>Use <code>field_size=0</code> to work over the rationals. DRsolve reconstructs exact rational results from modular images.</p>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyPre(this)">copy</button>
+      <pre>./drsolve <span class="str">"x^2+y^2+z^2-1, x^2+y^2-2*z^2, x+y+z"</span> <span class="str">"x,y"</span> <span class="num">0</span>
+./drsolve --comp <span class="str">"x^3+y^3+z^3, x^2*y+y^2*z+z^2*x, x+y+z-1"</span> <span class="str">"x,y"</span> <span class="num">0</span>
+./drsolve -s <span class="str">"x^2+y^2-5, x-y-1"</span> <span class="num">0</span></pre>
+    </div>
+    <div class="note-box">Over the rationals, the basic Dixon resultant, <code>--comp</code>, and solver mode are supported. <code>--ideal</code> and <code>--field-equation</code> are not implemented there yet.</div>
+
+    <h3>Common examples</h3>
+    <table>
+      <tr><th>Field type</th><th>Example argument</th><th>Current status</th></tr>
+      <tr><td>Prime field within <code>nmod</code> range</td><td><code>257</code></td><td>All main modes available</td></tr>
+      <tr><td>Very large prime field</td><td><code>340282366920938463463374607431768211507</code></td><td>Basic Dixon resultant only</td></tr>
+      <tr><td>GF(2<sup>8</sup>)</td><td><code>2^8</code></td><td>FLINT default irreducible polynomial</td></tr>
+      <tr><td>GF(2<sup>8</sup>) with AES polynomial</td><td><code>"2^8: t^8+t^4+t^3+t+1"</code></td><td>Custom polynomial supported</td></tr>
+      <tr><td>GF(3<sup>5</sup>)</td><td><code>3^5</code></td><td>Extension field with FLINT default polynomial</td></tr>
+      <tr><td>Q</td><td><code>0</code></td><td>Basic Dixon resultant, <code>--comp</code>, and solver mode</td></tr>
+    </table>
+  </div>
+
   <!-- Field-equation -->
   <div id="sub-fieldeq" class="sub-page">
     <h2>Field-equation Reduction</h2>
@@ -708,91 +760,35 @@ a3                   <span class="cmt"># last line: variables to eliminate</span
   </div>
 </div>
 
-<!-- ══ FIELDS ══ -->
-<div id="page-fields" class="page">
-  <h1>Field Support</h1>
-  <p class="subtitle">DRsolve currently supports prime fields, extension fields, and ℚ. Arithmetic uses FLINT throughout, with optional PML acceleration for suitable prime-field computations.</p>
-
-  <h2>Prime fields — F<sub>p</sub></h2>
-  <p>Specify a prime field as a plain integer such as <code>257</code>. For primes within the standard <code>nmod</code> backend, all finite-field modes are available.</p>
-  <div class="code-block">
-    <button class="copy-btn" onclick="copyPre(this)">copy</button>
-    <pre>./drsolve -s <span class="str">"..."</span> <span class="num">257</span>
-./drsolve -s <span class="str">"..."</span> <span class="num">65537</span>
-./drsolve -s <span class="str">"..."</span> <span class="num">4294967311</span></pre>
-  </div>
-  <p>When the optional <a href="https://github.com/vneiger/pml" target="_blank">PML library</a> is installed and detected at configure time, polynomial matrix operations are automatically accelerated for well-determined prime field systems.</p>
-  <div class="info-box">For very large primes beyond the <code>nmod</code> limit, the current release still computes Dixon resultants by reconstructing over ℚ and then reducing modulo the target prime.</div>
-  <div class="note-box">For very large primes beyond the <code>nmod</code> limit, solver mode is available, but <code>--comp</code>, <code>--random</code>, <code>--ideal</code>, and <code>--field-equation</code> are not available yet.</div>
-
-  <hr>
-
-  <h2>Extension fields — F<sub>p<sup>k</sup></sub></h2>
-  <p>Specify an extension field as <code>p^k</code>. The generator is <code>t</code> by default, and FLINT's built-in irreducible polynomial is used unless a custom one is provided.</p>
-  <div class="code-block">
-    <button class="copy-btn" onclick="copyPre(this)">copy</button>
-    <pre><span class="cmt"># FLINT default polynomial</span>
-./drsolve <span class="str">"..."</span> <span class="str">"x"</span> <span class="num">2^8</span>
-
-<span class="cmt"># Custom polynomial</span>
-./drsolve -s <span class="str">"x^2+t*y, x*y+t^2"</span> <span class="str">"2^8: t^8 + t^4 + t^3 + t + 1"</span></pre>
-  </div>
-  <div class="info-box">Extension fields are slower than prime fields because arithmetic is carried out modulo an irreducible polynomial. PML acceleration does not apply here.</div>
-  <div class="note-box">Extension fields whose characteristic exceeds the <code>nmod</code> limit are not supported in the current release.</div>
-
-  <hr>
-
-  <h2>Rational field — ℚ</h2>
-  <p>Use <code>field_size=0</code> to work over the rationals. DRsolve reconstructs exact rational results from modular images.</p>
-  <div class="code-block">
-    <button class="copy-btn" onclick="copyPre(this)">copy</button>
-    <pre>./drsolve <span class="str">"x^2+y^2+z^2-1, x^2+y^2-2*z^2, x+y+z"</span> <span class="str">"x,y"</span> <span class="num">0</span>
-./drsolve --comp <span class="str">"x^3+y^3+z^3, x^2*y+y^2*z+z^2*x, x+y+z-1"</span> <span class="str">"x,y"</span> <span class="num">0</span>
-./drsolve -s <span class="str">"x^2+y^2-5, x-y-1"</span> <span class="num">0</span></pre>
-  </div>
-  <div class="note-box">Over the rationals, the basic Dixon resultant, <code>--comp</code>, and solver mode are supported. <code>--ideal</code> and <code>--field-equation</code> are not implemented there yet.</div>
-
-  <h3>Common examples</h3>
-  <table>
-    <tr><th>Field type</th><th>Example argument</th><th>Current status</th></tr>
-    <tr><td>Prime field within <code>nmod</code> range</td><td><code>257</code></td><td>All main modes available</td></tr>
-    <tr><td>Very large prime field</td><td><code>340282366920938463463374607431768211507</code></td><td>Basic Dixon resultant only</td></tr>
-    <tr><td>GF(2<sup>8</sup>)</td><td><code>2^8</code></td><td>FLINT default irreducible polynomial</td></tr>
-    <tr><td>GF(2<sup>8</sup>) with AES polynomial</td><td><code>"2^8: t^8+t^4+t^3+t+1"</code></td><td>Custom polynomial supported</td></tr>
-    <tr><td>GF(3<sup>5</sup>)</td><td><code>3^5</code></td><td>Extension field with FLINT default polynomial</td></tr>
-    <tr><td>Q</td><td><code>0</code></td><td>Basic Dixon resultant, <code>--comp</code>, and solver mode</td></tr>
-  </table>
-</div>
-
 <!-- ══ SAGEMATH ══ -->
 <div id="page-sage" class="page">
   <h1>SageMath Interface</h1>
   <p class="subtitle">
-    <code>dixon_sage_interface.sage</code> is a thin wrapper that lets you call DRsolve
+    <code>drsolve_sage_interface.sage</code> is a thin wrapper that lets you call DRsolve
     directly from a SageMath session. Polynomials are passed as native Sage objects;
     the interface handles serialisation, subprocess invocation, and output parsing automatically.
   </p>
 
   <div class="info-box">
-    The interface file <code>dixon_sage_interface.sage</code> is included in the DRsolve repository.
+    The interface file <code>drsolve_sage_interface.sage</code> is included in the DRsolve repository.
     The DRsolve binary must be built and accessible before use.
   </div>
 
   <h2>Setup</h2>
   <div class="code-block">
     <button class="copy-btn" onclick="copyPre(this)">copy</button>
-    <pre><span class="kw">load</span>(<span class="str">"dixon_sage_interface.sage"</span>)
+    <pre><span class="kw">load</span>(<span class="str">"drsolve_sage_interface.sage"</span>)
 set_dixon_path(<span class="str">"./drsolve"</span>)   <span class="cmt"># set once per session</span></pre>
   </div>
 
   <hr>
 
-  <h2>Functions</h2>
+  <h2>Available functions</h2>
   <table>
     <tr><th>Function</th><th>Description</th><th>Returns</th></tr>
     <tr>
-      <td><code>DixonResultant(F, elim_vars, ...)</code></td>
-      <td>Compute the Dixon resultant, eliminating the specified variables. <code>field_size</code> is inferred from the polynomial ring if not given.</td>
+      <td><code>DixonRes(F, elim_vars, ...)</code><br><code>DixonResultant(F, elim_vars, ...)</code></td>
+      <td>Compute the resultant while eliminating the specified variables. <code>field_size</code> is inferred from the polynomial ring if not given.</td>
       <td>Resultant as a string, or <code>None</code></td>
     </tr>
     <tr>
@@ -810,8 +806,31 @@ set_dixon_path(<span class="str">"./drsolve"</span>)   <span class="cmt"># set o
       <td>Dixon resultant with triangular ideal reduction. <code>ideal_gens</code> is a list of strings like <code>"a^3=2*b+1"</code>.</td>
       <td>Resultant as a string, or <code>None</code></td>
     </tr>
+    <tr>
+      <td><code>set_dixon_path(path)</code><br><code>get_dixon_path()</code></td>
+      <td>Set or query the default path to the <code>drsolve</code> executable.</td>
+      <td>Path string or <code>None</code></td>
+    </tr>
   </table>
-  <p>All functions accept optional <code>debug=True</code> (prints diagnostics) and <code>timeout</code> (seconds). The <code>field_size</code> argument accepts an integer, <code>"p^k"</code> string, <code>GF(...)</code> object, or <code>0</code> for ℚ.</p>
+  <p>The helper writers <code>ToDixon(...)</code>, <code>ToDixonSolver(...)</code>, and <code>ToDixonIdeal(...)</code> are also available when you want to generate input files without running the binary.</p>
+
+  <h2>Common options</h2>
+  <table>
+    <tr><th>Option</th><th>Meaning</th></tr>
+    <tr><td><code>field_size</code></td><td>Integer prime, extension-field string such as <code>"2^8"</code> or <code>"2^8: t^8+t^4+t^3+t+1"</code>, Sage <code>GF(...)</code> object, or <code>0</code> for ℚ. If omitted, inferred from the Sage polynomial ring when possible.</td></tr>
+    <tr><td><code>verbosity=0..3</code></td><td>Pass <code>-v</code> to <code>drsolve</code>. If omitted, the interface leaves the CLI default unchanged.</td></tr>
+    <tr><td><code>time=True</code></td><td>Pass <code>--time</code>.</td></tr>
+    <tr><td><code>threads=n</code></td><td>Pass <code>--threads n</code>.</td></tr>
+    <tr><td><code>method</code>, <code>step1</code>, <code>step4</code></td><td>Select the determinant / recursive Dixon strategy.</td></tr>
+    <tr><td><code>resultant_method</code></td><td>One of <code>"dixon"</code>, <code>"macaulay"</code>, or <code>"subres"</code>.</td></tr>
+    <tr><td><code>field_equation=True</code></td><td>Enable field-equation reduction.</td></tr>
+    <tr><td><code>fast_ksy</code>, <code>fast_ksy_col</code></td><td>Control the method-5 KSY precondition options.</td></tr>
+    <tr><td><code>rational_root_scan</code></td><td>Solver-only option: <code>"auto"</code>, <code>"off"</code>, or <code>"force"</code>.</td></tr>
+    <tr><td><code>rational_only=True</code></td><td>Solver-only option for exact rational solutions over <code>field_size=0</code>.</td></tr>
+    <tr><td><code>debug=True</code></td><td>Print wrapper-level diagnostics such as the command line and output-file parsing status.</td></tr>
+    <tr><td><code>live_output=True</code></td><td>Stream <code>drsolve</code> stdout/stderr directly to the Sage terminal while the subprocess runs.</td></tr>
+    <tr><td><code>timeout</code></td><td>Abort the subprocess after the given number of seconds.</td></tr>
+  </table>
 
   <hr>
 
@@ -820,13 +839,13 @@ set_dixon_path(<span class="str">"./drsolve"</span>)   <span class="cmt"># set o
   <h3>Resultant and solver</h3>
   <div class="code-block">
     <button class="copy-btn" onclick="copyPre(this)">copy</button>
-    <pre><span class="kw">load</span>(<span class="str">"dixon_sage_interface.sage"</span>)
+    <pre><span class="kw">load</span>(<span class="str">"drsolve_sage_interface.sage"</span>)
 set_dixon_path(<span class="str">"./drsolve"</span>)
 
 R.&lt;x, y, z&gt; = GF(<span class="num">257</span>)[]
 F = [x + y + z - <span class="num">3</span>, x*y + y*z + z*x - <span class="num">3</span>, x*y*z - <span class="num">1</span>]
 
-res  = DixonResultant(F, [x, y])   <span class="cmt"># eliminate x, y</span>
+res  = DixonRes(F, [x, y])         <span class="cmt"># eliminate x, y</span>
 sols = DixonSolve(F)               <span class="cmt"># enumerate all solutions</span>
 info = DixonComplexity(F, [x, y])  <span class="cmt"># complexity estimate</span>
 
@@ -834,14 +853,59 @@ info = DixonComplexity(F, [x, y])  <span class="cmt"># complexity estimate</span
   </div>
 
   <h3>Iterative elimination</h3>
-  <p>The output of <code>DixonResultant</code> is a plain string and can be fed directly into the next call, enabling variable-by-variable elimination over large systems.</p>
+  <p>The output of <code>DixonRes</code> is a plain string and can be fed directly into the next call, enabling variable-by-variable elimination over large systems.</p>
   <div class="code-block">
     <button class="copy-btn" onclick="copyPre(this)">copy</button>
     <pre>R.&lt;x, y, z&gt; = GF(<span class="num">17</span>)[]
-res1 = DixonResultant([x+y+z, x*y+y*z+z*x+<span class="num">1</span>], [x])
-res2 = DixonResultant([res1, y*z-<span class="num">1</span>], [y])
-res3 = DixonResultant([res2, z-<span class="num">2</span>], [z])
+res1 = DixonRes([x+y+z, x*y+y*z+z*x+<span class="num">1</span>], [x])
+res2 = DixonRes([res1, y*z-<span class="num">1</span>], [y])
+res3 = DixonRes([res2, z-<span class="num">2</span>], [z])
 <span class="kw">print</span>(res3)</pre>
+  </div>
+
+  <h3>Method selection and live output</h3>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>R.&lt;x, y, z&gt; = GF(<span class="num">257</span>)[]
+F = [x + y + z - <span class="num">3</span>, x*y + y*z + z*x - <span class="num">3</span>, x*y*z - <span class="num">1</span>]
+
+res_macaulay = DixonRes(F, [x, y], resultant_method=<span class="str">"macaulay"</span>, verbosity=<span class="num">2</span>)
+res_fast = DixonRes(F, [x, y], method=<span class="num">5</span>, fast_ksy=<span class="kw">True</span>, fast_ksy_col=<span class="num">0</span>, time=<span class="kw">True</span>)
+sols = DixonSolve(F, verbosity=<span class="num">3</span>, live_output=<span class="kw">True</span>)
+
+<span class="kw">print</span>(res_macaulay)
+<span class="kw">print</span>(res_fast)
+<span class="kw">print</span>(sols)</pre>
+  </div>
+
+  <h3>Ideal reduction</h3>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>R.&lt;x0, x1, x2&gt; = GF(<span class="num">257</span>)[]
+F = [x0^2 + x1^2 + x2^2 - <span class="num">10</span>, x2^3 - x0*x1 - <span class="num">3</span>]
+I = [<span class="str">"x1^3=2*x0+1"</span>, <span class="str">"x2^3=x0*x1+3"</span>]
+
+res = DixonIdeal(F, I, [x2], verbosity=<span class="num">2</span>, time=<span class="kw">True</span>)
+<span class="kw">print</span>(res)</pre>
+  </div>
+
+  <h3>Extension fields and rational solving</h3>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyPre(this)">copy</button>
+    <pre>K.&lt;z8&gt; = GF(<span class="num">2</span>^<span class="num">8</span>, modulus=x^<span class="num">8</span> + x^<span class="num">4</span> + x^<span class="num">3</span> + x + <span class="num">1</span>)
+R.&lt;x, y&gt; = PolynomialRing(K, <span class="num">2</span>)
+F = [x^2 + z8*y + <span class="num">1</span>, x*y + z8^<span class="num">2</span>]
+
+res = DixonRes(F, [y], field_size=K)
+sols = DixonSolve(F, field_size=K)
+
+RQ.&lt;u, v&gt; = QQ[]
+G = [u^2 - <span class="num">1</span>, v - u]
+rat = DixonSolve(G, field_size=<span class="num">0</span>, rational_only=<span class="kw">True</span>)
+
+<span class="kw">print</span>(res)
+<span class="kw">print</span>(sols)
+<span class="kw">print</span>(rat)</pre>
   </div>
 
   <hr>
@@ -849,9 +913,10 @@ res3 = DixonResultant([res2, z-<span class="num">2</span>], [z])
   <h2>Helper functions</h2>
   <table>
     <tr><th>Function</th><th>Description</th></tr>
-    <tr><td><code>set_dixon_path(path)</code> / <code>get_dixon_path()</code></td><td>Set / get the default path to the <code>dixon</code> binary</td></tr>
+    <tr><td><code>set_dixon_path(path)</code> / <code>get_dixon_path()</code></td><td>Set / get the default path to the <code>drsolve</code> binary</td></tr>
     <tr><td><code>ToDixon(F, elim_vars, field_size, finput)</code></td><td>Write a Dixon/complexity input file without running the binary</td></tr>
     <tr><td><code>ToDixonSolver(F, field_size, finput)</code></td><td>Write a solver input file without running the binary</td></tr>
+    <tr><td><code>ToDixonIdeal(F, ideal_gens, elim_vars, field_size, finput)</code></td><td>Write an ideal-reduction input file without running the binary</td></tr>
   </table>
 </div>
 
@@ -1242,7 +1307,7 @@ make help</pre>
 </footer>
 
 <script>
-const PAGE_IDS = ['home','usage','fields','sage','install','downloads'];
+const PAGE_IDS = ['home','usage','sage','install','downloads'];
 
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
