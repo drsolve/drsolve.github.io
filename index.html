@@ -440,14 +440,12 @@ footer {
   </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:-5px;">
   <span style="background:#eee;color:#111;border:1px solid #d1d5db;padding:10px 10px;border-radius:6px;font-weight:bold;font-size:14px;margin-right:4px;">
-    <a href="#" onclick="showPage('downloads');return false;" style="text-decoration:none; color:inherit; display:inline-block;">Download v0.6.1</a>
+    <a href="#" onclick="showPage('downloads');return false;" style="text-decoration:none; color:inherit; display:inline-block;">Download v0.6.2</a>
   </span>
   <span style="width:1px;height:30px;background:#ddd;display:inline-block;margin:0 2px;"></span>
 
-  <a class="btn" href="https://github.com/drsolve/drsolve/archive/refs/tags/v0.6.1.tar.gz" style="background:#333;color:#fff;border:1px solid #333;">Source Code</a>
-  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.6.1/drsolve-0.6.1-linux-x86_64.zip">Linux Binary</a>
-  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.6.1/drsolve-0.6.1-macos26.7-arm64.zip">macOS Binary</a>
-  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/download/v0.6.1/drsolve-0.6.1-windows-x86_64.zip">Windows GUI</a>
+  <a class="btn" href="https://github.com/drsolve/drsolve/archive/refs/tags/v0.6.2.tar.gz" style="background:#333;color:#fff;border:1px solid #333;">Source Code</a>
+  <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/tag/v0.6.2">Binary Downloads</a>
     </div>
 </div>
 
@@ -563,6 +561,7 @@ footer {
       <li>Total degree of each input polynomial</li>
       <li>Bezout bound (product of degrees)</li>
       <li>Dixon matrix size via the Hessenberg recurrence</li>
+      <li>With <code>--generic-rank-pred</code>, predict the generic Dixon matrix rank from the polynomial degrees.</li>
       <li>Resultant degree estimate</li>
       <li>Step 1/2 and Step 4 complexity estimates for direct, HNF/interpolation, sparse, and recursive Dixon construction models</li>
     </ul>
@@ -1070,6 +1069,22 @@ make help</pre>
   <h1>Downloads</h1>
   <p class="subtitle">Source archives and binaries for each <a href="https://github.com/drsolve/drsolve/releases" target="_blank" rel="noopener noreferrer">release</a>. 
     Build instructions are on the <a href="#" onclick="showPage('install');return false;">Install</a> page.</p>
+  <!-- v0.6.2 -->
+  <div style="border:1px solid #ddd;border-radius:6px;padding:24px;margin-bottom:20px;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:4px;flex-wrap:wrap;">
+      <h2 style="margin:0;">v0.6.2</h2>
+    </div>
+    <ul style="list-style:none;font-size:14px;color:#333;margin-bottom:20px;display:flex;flex-direction:column;gap:6px;">
+      <li>- Substantially reduce memory usage.</li>
+      <li>- Add <code>--generic-rank-pred</code> to <code>--comp</code> for more accurate generic Dixon rank predictions.</li>
+      <li>- Further speed up bivariate resultant computation.</li>
+    </ul>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a class="btn" href="https://github.com/drsolve/drsolve/archive/refs/tags/v0.6.2.tar.gz"> Source code (.tar.gz)</a>
+      <a class="btn" href="https://github.com/drsolve/drsolve/archive/refs/tags/v0.6.2.zip"> Source code (.zip)</a>
+      <a class="btn btn-outline" href="https://github.com/drsolve/drsolve/releases/tag/v0.6.2"> Binary downloads on GitHub</a>
+    </div>
+  </div>
   <!-- v0.6.1 -->
   <div style="border:1px solid #ddd;border-radius:6px;padding:24px;margin-bottom:20px;">
     <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:4px;flex-wrap:wrap;">
